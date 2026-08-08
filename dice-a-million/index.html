@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<base href="https://cdn.jsdelivr.net/gh/playsurd/surd-assets@main/dice-a-million/">
+<script>(function () {
+  var W = window;
+  var unityTarget = null;
+  function tellUnity(methods, arg) {
+    var inst = W.__surdUnity || W.unityInstance || W.gameInstance;
+    if (!inst || !inst.SendMessage || !unityTarget) return;
+    for (var i = 0; i < methods.length; i++) {
+      try { arg === undefined ? inst.SendMessage(unityTarget, methods[i]) : inst.SendMessage(unityTarget, methods[i], arg); }
+      catch (e) {  }
+    }
+  }
+  if (typeof W.initPokiBridge !== 'function') {
+    W.initPokiBridge = function (name) { unityTarget = name || unityTarget; };
+  }
+  if (typeof W.commercialBreak !== 'function') {
+    W.commercialBreak = function () { setTimeout(function () { tellUnity(['CommercialBreakComplete', 'commercialBreakComplete']); }, 0); };
+  }
+  if (typeof W.rewardedBreak !== 'function') {
+    W.rewardedBreak = function () { setTimeout(function () { tellUnity(['RewardedBreakComplete', 'rewardedBreakComplete'], 'false'); }, 0); };
+  }
+  var resolved = function () { return Promise.resolve(); };
+  if (!W.PokiSDK) {
+    W.PokiSDK = {
+      init: resolved, initPokiBridge: function () {}, setDebug: function () {},
+      gameLoadingStart: function () {}, gameLoadingFinished: function () {},
+      gameLoadingProgress: function () {},
+      gameplayStart: function () {}, gameplayStop: function () {},
+      commercialBreak: resolved, rewardedBreak: function () { return Promise.resolve(false); },
+      happyTime: function () {}, customEvent: function () {}, captureError: function () {},
+      isAdBlocked: function () { return false; }, shareableURL: function () { return Promise.resolve(location.href); },
+      getURLParam: function (k) { try { return new URL(location.href).searchParams.get(k) || ''; } catch (e) { return ''; } },
+    };
+  }
+  if (!W.YaGames) {
+    var yPlayer = {
+      getName: function () { return 'player'; }, getUniqueID: function () { return 'local'; },
+      getData: function () { return Promise.resolve({}); }, setData: resolved,
+      getStats: function () { return Promise.resolve({}); }, setStats: resolved, incrementStats: resolved,
+      getMode: function () { return 'lite'; }, getPhoto: function () { return ''; },
+    };
+    var yLeaderboards = {
+      setLeaderboardScore: resolved,
+      getLeaderboardEntries: function () { return Promise.resolve({ entries: [] }); },
+      getLeaderboardPlayerEntry: function () { return Promise.reject(new Error('no entry')); },
+      getLeaderboardDescription: function () { return Promise.resolve({}); },
+    };
+    var ySdk = {
+      adv: {
+        showFullscreenAdv: function (o) { var c = o && o.callbacks; if (c && c.onClose) setTimeout(function () { c.onClose(false); }, 0); },
+        showRewardedVideo: function (o) { var c = o && o.callbacks; if (c && c.onClose) setTimeout(function () { c.onClose(); }, 0); },
+        getBannerAdvStatus: function () { return Promise.resolve({ stickyAdvIsShowing: false }); },
+      },
+      getPlayer: function () { return Promise.resolve(yPlayer); },
+      getPayments: function () { return Promise.resolve({
+        getCatalog: function () { return Promise.resolve([]); },
+        getPurchases: function () { return Promise.resolve([]); },
+        purchase: function () { return Promise.reject(new Error('payments unavailable')); },
+        consumePurchase: resolved,
+      }); },
+      getFlags: function () { return Promise.resolve({}); },
+      getStorage: function () { return Promise.resolve(window.localStorage); },
+      clipboard: { writeText: resolved },
+      shortcut: { canShowPrompt: function () { return Promise.resolve({ canShow: false }); }, showPrompt: function () { return Promise.resolve({ outcome: 'rejected' }); } },
+      feedback: { canReview: function () { return Promise.resolve({ value: false }); }, requestReview: function () { return Promise.resolve({ feedbackSent: false }); } },
+      getLeaderboards: function () { return Promise.resolve(yLeaderboards); },
+      features: { LoadingAPI: { ready: function () {} } },
+      screen: { fullscreen: { request: resolved, exit: resolved } },
+      isAvailableMethod: function () { return Promise.resolve(false); },
+      environment: { i18n: { lang: 'en' }, app: { id: 'local' } },
+      deviceInfo: { isDesktop: function () { return true; }, isMobile: function () { return false; },
+                    isTablet: function () { return false; }, isTV: function () { return false; },
+                    type: 'desktop' },
+    };
+    W.YaGames = { init: function () { return Promise.resolve(ySdk); } };
+    W.ysdk = ySdk;
+  }
+  if (!W.ytgame) {
+    var ytNoop = function () {};
+    W.ytgame = {
+      IN_PLAYABLES_ENV: false,
+      game: { firstFrameReady: ytNoop, gameReady: ytNoop, loadData: function () { return Promise.resolve(''); },
+              saveData: function () { return Promise.resolve(); }, isPaused: function () { return false; } },
+      system: { getLanguage: function () { return 'en'; }, isAudioEnabled: function () { return true; },
+                onAudioEnabledChange: ytNoop, onPause: ytNoop, onResume: ytNoop },
+      health: { logError: ytNoop, logWarning: ytNoop },
+      engagement: { sendScore: function () { return Promise.resolve(); } },
+      ads: { requestInterstitialAd: function () { return Promise.resolve(); } },
+    };
+  }
+  if (typeof document !== 'undefined' && document.xURL === undefined) {
+    try { document.xURL = 'https://poki.com/'; } catch (e) {  }
+  }
+  if (!W.GamePix) {
+    W.GamePix = { init: function () {}, ping: function () {}, gameLoadingStart: function () {}, gameLoadingFinished: function () {},
+                  interstitialAd: resolved, rewardAd: function () { return Promise.resolve(false); }, happyMoment: function () {} };
+  }
+  if (!W.CrazyGames) {
+    var noop = function () {};
+    W.CrazyGames = { SDK: {
+      init: resolved, game: { gameplayStart: noop, gameplayStop: noop, loadingStart: noop, loadingStop: noop, happytime: noop },
+      ad: { requestAd: function (t, cb) { if (cb && cb.adFinished) cb.adFinished(); }, hasAdblock: function () { return Promise.resolve(false); } },
+      user: { getUser: function () { return Promise.resolve(null); } },
+      banner: { requestBanner: resolved, clearAllBanners: noop },
+    } };
+  }
+})();
+if (typeof window !== 'undefined') {
+  if (typeof window.environmentData === 'undefined') window.environmentData = 'NO_DATA';
+  if (typeof window.nowFullAdOpen === 'undefined') window.nowFullAdOpen = false;
+}
+try {
+  var parentWin = window.parent;
+  if (parentWin && parentWin !== window) {
+    if (typeof parentWin.maeExportApis_ !== 'function') parentWin.maeExportApis_ = function () {};
+  }
+} catch (e) {  }
+if(typeof window.UnityProgress!=="function")window.UnityProgress=function(){this.SetMessage=function(){};this.SetProgress=function(){};this.Clear=function(){};};</script>
+<script>window.SURD_GAME={"id":"dice-a-million","engine":"generic","base":"https://cdn.jsdelivr.net/gh/playsurd/surd-assets@main/dice-a-million/","runtime":"https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/v73b6add486/","files":{},"config":{}};</script>
+<script crossorigin="anonymous" src="https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/v73b6add486/runtime.js"></script>
+
+  
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+  <title>Dice a Million</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; background: #000; overflow: hidden; }
+    #canvas { position: fixed; top: 0; left: 0; transform-origin: top left; }
+  </style>
+</head>
+<body>
+  <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1"></canvas>
+
+  <script>
+  const canvas = document.getElementById('canvas');
+
+  const origSetProperty = canvas.style.setProperty.bind(canvas.style);
+  canvas.style.setProperty = function(prop, val, priority) {
+    if (prop === 'width' || prop === 'height') return;
+    return origSetProperty(prop, val, priority);
+  };
+
+  ['width', 'height'].forEach(prop => {
+    Object.defineProperty(canvas.style, prop, {
+      set: function() {},
+      get: function() { return ''; },
+      configurable: true
+    });
+  });
+
+  function scaleCanvas() {
+    const cw = canvas.width;
+    const ch = canvas.height;
+    if (!cw || !ch) return;
+    const scaleX = window.innerWidth / cw;
+    const scaleY = window.innerHeight / ch;
+    canvas.style.transform = `scale(${scaleX}, ${scaleY})`;
+  }
+
+  new MutationObserver(scaleCanvas).observe(canvas, { attributes: true, attributeFilter: ['width', 'height'] });
+  window.addEventListener('resize', scaleCanvas);
+  setInterval(scaleCanvas, 200);
+  </script>
+
+  <script>
+  const _open = XMLHttpRequest.prototype.open;
+  XMLHttpRequest.prototype.open = function(method, url, ...args) {
+    if (typeof url === 'string' && url.includes('mus.dat')) {
+      const xhr = this;
+      const BASE = 'https://cdn.jsdelivr.net/gh/playsurd/surd-assets@main/dice-a-million/';
+      this.send = function() {
+        Promise.all([
+          fetch(BASE + 'mus.dat.part1').then(r => r.arrayBuffer()),
+          fetch(BASE + 'mus.dat.part2').then(r => r.arrayBuffer()),
+          fetch(BASE + 'mus.dat.part3').then(r => r.arrayBuffer()),
+        ]).then(([p1, p2, p3]) => {
+          const combined = new Uint8Array(p1.byteLength + p2.byteLength + p3.byteLength);
+          combined.set(new Uint8Array(p1), 0);
+          combined.set(new Uint8Array(p2), p1.byteLength);
+          combined.set(new Uint8Array(p3), p1.byteLength + p2.byteLength);
+          Object.defineProperty(xhr, 'response', { value: combined.buffer });
+          Object.defineProperty(xhr, 'status', { value: 200 });
+          Object.defineProperty(xhr, 'readyState', { value: 4 });
+          if (xhr.onload) xhr.onload();
+        });
+      };
+      return _open.call(this, method, url, ...args);
+    }
+    return _open.call(this, method, url, ...args);
+  };
+  </script>
+
+  <script>
+  function manifestFiles() {
+    return ["runner.data","runner.js","runner.wasm","audio-worklet.js","game.unx","mus.dat","snd.dat","resources/eb.mp4"].join(";");
+  }
+  function manifestFilesMD5() {
+    return ["f72bbdcbdcd1d3841ceaa4a4e25311a5","b7692ef32b6fab43c77fb58735db6034","75dbb242c2e3c7a074418a2ed001b1fa","e8f1e8db8cf996f8715a6f2164c2e44e","fc7cc2bc1c5fa5c557eb1734440275a1","48d4f0d2c6d41ff77166028cf5cd0447","0e648dc17529bd2dcd011b106c3af2e4","df927c8b5ff0d54d9460330091b5b0ba"];
+  }
+  function onFirstFrameRendered() {}
+  var g_pWadLoadCallback = undefined;
+  function setWadLoadCallback(cb) { g_pWadLoadCallback = cb; if (cb) cb(); }
+  var g_pAddAsyncMethod = -1;
+  function setAddAsyncMethod(m) { g_pAddAsyncMethod = m; }
+  var g_pJSExceptionHandler = undefined;
+  function setJSExceptionHandler(h) { g_pJSExceptionHandler = h; }
+  function hasJSExceptionHandler() { return typeof g_pJSExceptionHandler === 'function'; }
+  function doJSExceptionHandler(j) { if (hasJSExceptionHandler()) g_pJSExceptionHandler(JSON.parse(j)); }
+  </script>
+
+  <script>
+  var Module = {
+    preRun: [],
+    postRun: [],
+    print: function(text) { console.log(text); },
+    printErr: function(text) { console.error(text); },
+    canvas: document.getElementById('canvas'),
+    setStatus: function(text) { console.log('Status:', text); },
+    totalDependencies: 0,
+    monitorRunDependencies: function(left) {
+      this.totalDependencies = Math.max(this.totalDependencies, left);
+    },
+    audioContext: (function() {
+      try {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        return new AC();
+      } catch(e) { return null; }
+    })(),
+  };
+  document.addEventListener('click', function() {
+    if (Module.audioContext && Module.audioContext.state === 'suspended') {
+      Module.audioContext.resume();
+    }
+  }, { once: true });
+  </script>
+
+  <script>
+  (async function() {
+    const BASE = 'https://cdn.jsdelivr.net/gh/playsurd/surd-assets@main/dice-a-million/';
+    const res = await fetch(BASE + 'runner.js');
+    let text = await res.text();
+    text = text.replace(/new Worker\(["']([^"']+)["']\)/g, (match, url) => {
+      if (!url.startsWith('http')) return `new Worker("${BASE}${url}")`;
+      return match;
+    });
+    const blob = new Blob([text], { type: 'application/javascript' });
+    const script = document.createElement('script');
+    script.src = URL.createObjectURL(blob);
+    document.body.appendChild(script);
+  })();
+  </script>
+</body>
+
+</html>
