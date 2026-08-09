@@ -105,10 +105,20 @@
     } };
   }
 })();
+if (typeof window !== 'undefined') {
+  if (typeof window.environmentData === 'undefined') window.environmentData = 'NO_DATA';
+  if (typeof window.nowFullAdOpen === 'undefined') window.nowFullAdOpen = false;
+}
+try {
+  var parentWin = window.parent;
+  if (parentWin && parentWin !== window) {
+    if (typeof parentWin.maeExportApis_ !== 'function') parentWin.maeExportApis_ = function () {};
+  }
+} catch (e) {  }
 if(typeof window.UnityProgress!=="function")window.UnityProgress=function(){this.SetMessage=function(){};this.SetProgress=function(){};this.Clear=function(){};};</script></head><body>
 <div id="unity-container" class="unity-desktop" style="position:absolute;inset:0"><canvas id="unity-canvas" style="width:100vw;height:100vh;display:block"></canvas><div id="loading-cover" style="display:none"></div><div id="unity-loading-bar" style="display:none"><div id="unity-logo"></div><div id="unity-progress-bar-empty"><div id="unity-progress-bar-full"></div></div></div><div id="unity-footer"><div id="unity-webgl-logo"></div><div id="unity-fullscreen-button"></div><div id="unity-build-title"></div></div></div>
 
 
-<script>window.SURD_GAME = {"id":"needy-streamer-overload","engine":"unity","base":"https://cdn.jsdelivr.net/gh/playsurd/surd-assets-4@main/needy-streamer-overload/","runtime":"https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/v4b8615f6da/","files":{"data":{"path":"Build/nsoweather2.data.unityweb","parts":[".sp0",".sp1",".sp2",".sp3",".sp4",".sp5",".sp6",".sp7",".sp8",".sp9",".sp10",".sp11",".sp12",".sp13",".sp14",".sp15",".sp16",".sp17",".sp18",".sp19"],"bytes":369974390,"mime":"application/octet-stream"},"framework":{"path":"Build/framework.js","bytes":475530,"mime":"text/javascript"},"code":{"path":"Build/nsoweather2.wasm.unityweb","bytes":16223847,"mime":"application/octet-stream"}},"config":{"era":"modern","loaderJs":"Build/nsoweather2.loader.js","companyName":"WSS playground","productName":"Windose","productVersion":"1.4.0"}};</script>
-<script crossorigin="anonymous" src="https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/v4b8615f6da/runtime.js"></script>
+<script>window.SURD_GAME = {"id":"needy-streamer-overload","engine":"unity","base":"https://cdn.jsdelivr.net/gh/playsurd/surd-assets-4@main/needy-streamer-overload/","runtime":"https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/vd90635141c/","files":{"data":{"path":"Build/nsoweather2.data.unityweb","parts":[".sp0",".sp1",".sp2",".sp3",".sp4",".sp5",".sp6",".sp7",".sp8",".sp9",".sp10",".sp11",".sp12",".sp13",".sp14",".sp15",".sp16",".sp17",".sp18",".sp19"],"bytes":369974390,"mime":"application/octet-stream"},"framework":{"path":"Build/framework.js","bytes":475670,"mime":"text/javascript"},"code":{"path":"Build/nsoweather2.wasm.unityweb","bytes":16223847,"mime":"application/octet-stream"}},"config":{"era":"modern","loaderJs":"Build/nsoweather2.loader.js","companyName":"WSS playground","productName":"Windose","productVersion":"1.4.0"}};</script>
+<script crossorigin="anonymous" src="https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/vd90635141c/runtime.js"></script>
 </body></html>
