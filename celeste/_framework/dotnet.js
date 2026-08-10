@@ -253,7 +253,7 @@ async function A(e, t) {
 }
 function D(e) {
     return "string" != typeof e && Ce(!1, "url must be a string"),
-    !O(e) && 0 !== e.indexOf("./") && 0 !== e.indexOf("../") && globalThis.URL && globalThis.document && globalThis.document.baseURI && (e = new URL(e,globalThis.document.baseURI).toString()),
+    !O(e) && 0 !== e.indexOf("./") && 0 !== e.indexOf("../") && globalThis.URL && globalThis.document && globalThis."https://cdn.jsdelivr.net/gh/playsurd/surd-assets-4@main/celeste/" && (e = new URL(e,globalThis."https://cdn.jsdelivr.net/gh/playsurd/surd-assets-4@main/celeste/").toString()),
     e
 }
 const C = /^[a-zA-Z][a-zA-Z\d+\-.]*?:\/\//
@@ -1276,7 +1276,7 @@ async function Pe(e) {
                     return null;
                 if (!1 === window.isSecureContext)
                     return null;
-                const t = `dotnet-resources-${globalThis.document.baseURI.substring(globalThis.document.location.origin.length)}`;
+                const t = `dotnet-resources-${globalThis."https://cdn.jsdelivr.net/gh/playsurd/surd-assets-4@main/celeste/".substring(globalThis.document.location.origin.length)}`;
                 try {
                     return await caches.open(t) || null
                 } catch (e) {
