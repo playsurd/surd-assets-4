@@ -1,0 +1,431 @@
+<!doctypehtml>
+    <html lang=en-us>
+
+    <head>
+<base href="https://cdn.jsdelivr.net/gh/playsurd/surd-assets-4@main/doki-doki-literature-club/">
+<script>(function () {
+  var W = window;
+  var unityTarget = null;
+  function tellUnity(methods, arg) {
+    var inst = W.__surdUnity || W.unityInstance || W.gameInstance;
+    if (!inst || !inst.SendMessage || !unityTarget) return;
+    for (var i = 0; i < methods.length; i++) {
+      try { arg === undefined ? inst.SendMessage(unityTarget, methods[i]) : inst.SendMessage(unityTarget, methods[i], arg); }
+      catch (e) {  }
+    }
+  }
+  if (typeof W.initPokiBridge !== 'function') {
+    W.initPokiBridge = function (name) { unityTarget = name || unityTarget; };
+  }
+  if (typeof W.commercialBreak !== 'function') {
+    W.commercialBreak = function () { setTimeout(function () { tellUnity(['CommercialBreakComplete', 'commercialBreakComplete']); }, 0); };
+  }
+  if (typeof W.rewardedBreak !== 'function') {
+    W.rewardedBreak = function () { setTimeout(function () { tellUnity(['RewardedBreakComplete', 'rewardedBreakComplete'], 'false'); }, 0); };
+  }
+  var resolved = function () { return Promise.resolve(); };
+  if (!W.PokiSDK) {
+    W.PokiSDK = {
+      init: resolved, initPokiBridge: function () {}, setDebug: function () {},
+      gameLoadingStart: function () {}, gameLoadingFinished: function () {},
+      gameLoadingProgress: function () {},
+      gameplayStart: function () {}, gameplayStop: function () {},
+      commercialBreak: resolved, rewardedBreak: function () { return Promise.resolve(false); },
+      happyTime: function () {}, customEvent: function () {}, captureError: function () {},
+      isAdBlocked: function () { return false; }, shareableURL: function () { return Promise.resolve(location.href); },
+      getURLParam: function (k) { try { return new URL(location.href).searchParams.get(k) || ''; } catch (e) { return ''; } },
+    };
+  }
+  if (!W.YaGames) {
+    var yPlayer = {
+      getName: function () { return 'player'; }, getUniqueID: function () { return 'local'; },
+      getData: function () { return Promise.resolve({}); }, setData: resolved,
+      getStats: function () { return Promise.resolve({}); }, setStats: resolved, incrementStats: resolved,
+      getMode: function () { return 'lite'; }, getPhoto: function () { return ''; },
+    };
+    var yLeaderboards = {
+      setLeaderboardScore: resolved,
+      getLeaderboardEntries: function () { return Promise.resolve({ entries: [] }); },
+      getLeaderboardPlayerEntry: function () { return Promise.reject(new Error('no entry')); },
+      getLeaderboardDescription: function () { return Promise.resolve({}); },
+    };
+    var ySdk = {
+      adv: {
+        showFullscreenAdv: function (o) { var c = o && o.callbacks; if (c && c.onClose) setTimeout(function () { c.onClose(false); }, 0); },
+        showRewardedVideo: function (o) { var c = o && o.callbacks; if (c && c.onClose) setTimeout(function () { c.onClose(); }, 0); },
+        getBannerAdvStatus: function () { return Promise.resolve({ stickyAdvIsShowing: false }); },
+      },
+      getPlayer: function () { return Promise.resolve(yPlayer); },
+      getPayments: function () { return Promise.resolve({
+        getCatalog: function () { return Promise.resolve([]); },
+        getPurchases: function () { return Promise.resolve([]); },
+        purchase: function () { return Promise.reject(new Error('payments unavailable')); },
+        consumePurchase: resolved,
+      }); },
+      getFlags: function () { return Promise.resolve({}); },
+      getStorage: function () { return Promise.resolve(window.localStorage); },
+      clipboard: { writeText: resolved },
+      shortcut: { canShowPrompt: function () { return Promise.resolve({ canShow: false }); }, showPrompt: function () { return Promise.resolve({ outcome: 'rejected' }); } },
+      feedback: { canReview: function () { return Promise.resolve({ value: false }); }, requestReview: function () { return Promise.resolve({ feedbackSent: false }); } },
+      getLeaderboards: function () { return Promise.resolve(yLeaderboards); },
+      features: { LoadingAPI: { ready: function () {} } },
+      screen: { fullscreen: { request: resolved, exit: resolved } },
+      isAvailableMethod: function () { return Promise.resolve(false); },
+      environment: { i18n: { lang: 'en' }, app: { id: 'local' } },
+      deviceInfo: { isDesktop: function () { return true; }, isMobile: function () { return false; },
+                    isTablet: function () { return false; }, isTV: function () { return false; },
+                    type: 'desktop' },
+    };
+    W.YaGames = { init: function () { return Promise.resolve(ySdk); } };
+    W.ysdk = ySdk;
+  }
+  if (!W.ytgame) {
+    var ytNoop = function () {};
+    W.ytgame = {
+      IN_PLAYABLES_ENV: false,
+      game: { firstFrameReady: ytNoop, gameReady: ytNoop, loadData: function () { return Promise.resolve(''); },
+              saveData: function () { return Promise.resolve(); }, isPaused: function () { return false; } },
+      system: { getLanguage: function () { return 'en'; }, isAudioEnabled: function () { return true; },
+                onAudioEnabledChange: ytNoop, onPause: ytNoop, onResume: ytNoop },
+      health: { logError: ytNoop, logWarning: ytNoop },
+      engagement: { sendScore: function () { return Promise.resolve(); } },
+      ads: { requestInterstitialAd: function () { return Promise.resolve(); } },
+    };
+  }
+  if (typeof document !== 'undefined' && document.xURL === undefined) {
+    try { document.xURL = 'https://poki.com/'; } catch (e) {  }
+  }
+  if (!W.GamePix) {
+    W.GamePix = { init: function () {}, ping: function () {}, gameLoadingStart: function () {}, gameLoadingFinished: function () {},
+                  interstitialAd: resolved, rewardAd: function () { return Promise.resolve(false); }, happyMoment: function () {} };
+  }
+  if (!W.CrazyGames) {
+    var noop = function () {};
+    W.CrazyGames = { SDK: {
+      init: resolved, game: { gameplayStart: noop, gameplayStop: noop, loadingStart: noop, loadingStop: noop, happytime: noop },
+      ad: { requestAd: function (t, cb) { if (cb && cb.adFinished) cb.adFinished(); }, hasAdblock: function () { return Promise.resolve(false); } },
+      user: { getUser: function () { return Promise.resolve(null); } },
+      banner: { requestBanner: resolved, clearAllBanners: noop },
+    } };
+  }
+})();
+if (typeof window !== 'undefined') {
+  if (typeof window.environmentData === 'undefined') window.environmentData = 'NO_DATA';
+  if (typeof window.nowFullAdOpen === 'undefined') window.nowFullAdOpen = false;
+}
+try {
+  var parentWin = window.parent;
+  if (parentWin && parentWin !== window) {
+    if (typeof parentWin.maeExportApis_ !== 'function') parentWin.maeExportApis_ = function () {};
+  }
+} catch (e) {  }
+if(typeof window.UnityProgress!=="function")window.UnityProgress=function(){this.SetMessage=function(){};this.SetProgress=function(){};this.Clear=function(){};};
+window.alert=function(){};window.confirm=function(){return false;};window.prompt=function(){return null;};</script>
+<script>window.SURD_GAME={"id":"doki-doki-literature-club","engine":"generic","base":"https://cdn.jsdelivr.net/gh/playsurd/surd-assets-4@main/doki-doki-literature-club/","runtime":"https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/vae8e0b73b4/","files":{},"config":{}};</script>
+<script crossorigin="anonymous" src="https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/vae8e0b73b4/runtime.js"></script>
+
+        
+        <meta charset=utf-8>
+        <meta content="text/html; charset=utf-8" http-equiv=Content-Type>
+        <title>Doki Doki Literature Club!</title>
+        <meta content="width=device-width,initial-scale=1" name=viewport>
+        
+        <link href=icons/web-icon.png rel=icon sizes=128x128 type=image/png>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+        <meta content=#000 name=theme-color>
+        <style>
+            html {
+                background: #111;
+                font-family: sans-serif
+            }
+
+            .filesystem-list-object {
+                cursor: pointer;
+                font-family: Montserrat, sans-serif;
+            }
+
+            #canvas {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: #000;
+                border: 0 none
+            }
+
+            .visible {
+                visibility: visible;
+                opacity: 1;
+                transition: opacity .1s linear
+            }
+
+            .hidden {
+                visibility: hidden;
+                opacity: 0;
+                transition: visibility 0s .25s, opacity .25s linear
+            }
+
+            #inputDiv,
+            #statusDiv {
+                background: rgba(0, 0, 0, .75);
+                width: 50%;
+                margin: auto;
+                min-width: 340px;
+                padding: 10px;
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                border-radius: 0 0 5px 5px
+            }
+
+            #statusTextDiv {
+                overflow: auto;
+                max-height: 40vh;
+                color: #ccc;
+                font-size: 14px
+            }
+
+            #statusProgress {
+                display: none;
+                width: 100%
+            }
+
+            #inputDiv {
+                width: 65%;
+                padding-left: 10px;
+                padding-right: 20px
+            }
+
+            #inputPrompt {
+                color: #eee;
+                font-size: 150%;
+                margin-bottom: 1em;
+                margin-top: 1em
+            }
+
+            #inputText {
+                width: 100%;
+                font-size: 175%;
+                padding: 5px;
+                background: inherit;
+                color: #eee
+            }
+
+            #inputText:focus {
+                color: #fff
+            }
+
+            #ContextContainer {
+                position: absolute;
+                left: 0;
+                top: 0;
+                color: #fff
+            }
+
+            #ContextContainer.shown {
+                background: rgba(0, 0, 0, .5);
+                border-radius: 0 0 5px 0
+            }
+
+            #ContextButton {
+                text-decoration: none;
+                color: #d3d3d3;
+                font-size: xx-large;
+                cursor: pointer;
+                user-select: none;
+                -moz-user-select: none;
+                padding: 10px 10px;
+                opacity: .75
+            }
+
+            #ContextButton:focus {
+                outline: 0;
+                color: #fff;
+                opacity: 1
+            }
+
+            #ContextMenu a {
+                text-decoration: none;
+                color: #d3d3d3;
+                background: #444;
+                height: 48px;
+                width: 250px;
+                border-radius: 5px;
+                border: 1px solid #d3d3d3;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 5px 5px;
+                opacity: 1;
+            }
+
+            #ContextMenu a:hover {
+                text-decoration: none;
+                background: #666;
+                color: #fff
+            }
+
+            #presplash {
+                position: absolute;
+                top: 0;
+                left: 0;
+                display: block;
+                margin: auto;
+                width: 100%;
+                height: 100%;
+                object-fit: contain
+            }
+
+            body {
+                margin: 0;
+                height: 100vh; /* Full viewport height */
+                display: flex;
+                justify-content: center; /* Center horizontally */
+                align-items: center; /* Center vertically */
+                font-family: Arial, sans-serif;
+                flex-direction: column; /* Stack elements vertically */
+            }
+
+            /* Style the large text */
+            .largest-text {
+                font-size: 6rem; /* Large text size */
+                margin: 10px;
+                color: white;
+                text-align: center;
+            }
+            .disclaimer {
+                font-size: .75rem; /* Large text size */
+                max-width: 50%;
+                color: white;
+                text-align: center;
+            }
+            .flex-centered {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .absolute-center {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            h1, h2, p {
+                color: white;
+            }
+
+            body {
+                font-family: Arial, sans-serif;
+            }
+            #fileList {
+                list-style: none;
+                padding: 0;
+            }
+            #fileList li {
+                margin: 5px 0;
+                cursor: pointer;
+                color: blue;
+                text-decoration: underline;
+            }
+            #fileContent {
+                margin-top: 20px;
+                white-space: pre-wrap;
+                border: 1px solid #ccc;
+                padding: 10px;
+            }
+            #filesystem {
+                z-index: 99;
+                background: #444;
+            }
+            #intro-text {
+                max-width: 90%;
+            }
+        </style>
+    <script>
+(function(){try{var m=(window.location.search||'').match(/[?&]__lp=([^&]+)/);var n=m?decodeURIComponent(m[1]):'';if(window.parent&&window.parent!==window){window.parent.postMessage({__lumin:'frame-ok',game:'selenite/ddlc',nonce:n},'*');}}catch(e){}})();
+</script>
+<!-- Google tag (gtag.js) -->
+
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-L69H1VNZ27');
+</script>
+<script>
+  window.__lumin_game_id = 'selenite/ddlc';
+  console.log('[LuminSDK] Game loaded:', 'selenite/ddlc');
+</script>
+
+</head>
+
+    <body>
+        <canvas class=hidden id=canvas oncontextmenu=event.preventDefault() tabindex=-1></canvas>
+        <div id="filesystem" class="hidden absolute-center">
+            <div style="margin: 2%;">
+                <h1 style="text-align: center;">IDBFS Explorer</h1>
+                <div style="display: flex; flex-direction: row;">
+                    <button id="syncFrom">Refresh (Sync)</button>
+                    <button id="deleteModeButton">Toggle Delete Mode</button>
+                </div>
+                <ul id="fileList" style="max-width: 80vh; max-height: 50vh; overflow-y: auto; border: 1px solid #ccc; padding: 10px;"></ul>
+            </div>
+        </div>
+        <div class="flex-centered" id="intro-text">
+            <h1 class="largest-text">Click anywhere to initialize game.</h1>
+            <p class="disclaimer">DDLC is NOT our property in anyway and shall all the rights of the presented IP belong to Team Salvato. This content knowingly violates Team Salvato's official IP guidelines, though we do not condone any further violation of such guidelines. Sorry not sorry.</p>
+        </div>
+        <div id=ContextContainer><a id=ContextButton>≡</a><br>
+            <div id=ContextMenu style=display:none>
+                <input id=ID_SavegamesImport accept=application/zip onchange=onSavegamesImport(this) style=display:none type=file>
+                <a href="javascript:document.getElementById('ID_SavegamesImport').click();">Import Saves</a>
+                <a href=javascript:onSavegamesExport();>Export Saves</a>
+                <a href=javascript:showFileSystem();>Explore Filesystem</a>
+                <a href="javascript:FSDownload('/log.txt', 'text/plain');">Download Log</a>
+                <p style="text-align: center;">Powered by Ren'Py.</p>
+            </div>
+        </div>
+
+        <div id=statusDiv class=hidden>
+            <div id=statusTextDiv></div><progress id=statusProgress max=100 value=0></progress>
+        </div>
+        <div id=inputDiv class=hidden>
+            <form id=inputForm>
+                <div id=inputPrompt></div><input id=inputText>
+            </form>
+        </div>
+        <script>
+            navigator.serviceWorker && (navigator.serviceWorker.controller || navigator.serviceWorker.register(
+                "./service-worker.js", {
+                    updateViaCache: "all"
+                }))
+        </script>
+        <script>
+            var listener = function() {
+                var element = document.getElementById("canvas");
+                element.classList.remove("hidden");
+
+                var scriptPre = document.createElement("script");
+                scriptPre.src = "renpy-pre.js";
+
+                var scriptMain = document.createElement("script");
+                scriptMain.src = "renpy.js";
+                scriptMain.async = true;
+
+                document.body.appendChild(scriptPre);
+                document.body.appendChild(scriptMain);
+
+                document.removeEventListener("click", listener);
+            };
+            document.addEventListener("click", listener);
+        </script>
+    </body>
+
+    </html>
