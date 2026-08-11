@@ -143,15 +143,57 @@ window.alert=function(){};window.confirm=function(){return false;};window.prompt
 (function(){
     var BAD = /(doubleclick|googlesyndication|googleadservices|googleads|adtrafficquality|2mdn\.net|imasdk\.googleapis|adsbygoogle|gamemonetize|fliplineads|cpmstar|ngads|adinplay|mochibot|mochiads|gamedistribution|azerioncircle|gamemonkey|scorecardresearch|moatads|amazon-adsystem|criteo|pubmatic|rubiconproject|adnxs|casalemedia|smartadserver|taboola|outbrain|google-analytics|googletagmanager|gameanalytics|cloud\.unity3d\.com|hotjar|mixpanel|clarity\.ms|enjoy4fun|gamebridge\.games|gamearter|poki\.io|famobi|softgames|yandex\.ru\/metrika|mc\.yandex)/i;
     function bad(u){ try { return BAD.test(String(u)); } catch(e){ return false; } }
+    /* HOST-ABSOLUTE PATHS: "/version.json", "/audio/x.flac".
+     *
+     * A leading slash ignores <base> completely and resolves against the ORIGIN, which for us
+     * is the site (or an opaque blob origin) and never holds game assets — so every such
+     * request is a guaranteed 404. 2048-merge-run asked for /version.json, /fileconfig.json
+     * and every one of its scene files this way and showed a black screen with nothing but
+     * "Script error." to go on; a-dark-room does the same with /audio/*.flac.
+     *
+     * Since no host-absolute path can ever be correct here, point them all at the game's own
+     * base. This is a rewrite rather than a refusal: the files exist, just one level up.
+     * Protocol-relative "//host/x" is a different thing (a real remote host) and is left to
+     * the denylist above. */
+    /* Read the base LAZILY. This guard is deliberately installed before the manifest script
+     * (that order is load-bearing — moving SURD_GAME ahead of the prelude once stopped this
+     * very game from rendering at all), so at install time there is no base to capture. */
+    function gbase(){ try { return (window.SURD_GAME && window.SURD_GAME.base) || ''; } catch(e){ return ''; } }
+    function rebase(u){
+      try {
+        if (typeof u !== 'string' || !u) return u;
+        var B = gbase(); if (!B) return u;
+        B = B.replace(/\/?$/, '/');
+        if (u.indexOf(B) === 0) return u;                        // already where it belongs
+        /* Never touch OUR OWN plumbing. The runtime and its adapters live at a different path
+         * (and in production a different origin), and rebasing them points the loader at the
+         * game's asset directory, where no adapter exists. */
+        var RT = '';
+        try { RT = (window.SURD_GAME && window.SURD_GAME.runtime) || ''; } catch(e){}
+        if (RT && u.indexOf(RT) === 0) return u;
+        if (u.indexOf('/_rt/') >= 0 || u.indexOf('surd-runtime') >= 0) return u;
+        if (u.charAt(0) === '/' && u.charAt(1) !== '/') return B + u.slice(1);
+        /* An engine that builds its own absolute URLs from location, rather than letting the
+         * browser resolve a relative path, lands on the SITE origin — which holds no game
+         * assets either. 2048-merge-run (LayaAir) asks for "<origin>/version.json" outright,
+         * so matching only a leading slash was not enough. Our origin is never a legitimate
+         * place for a game to fetch from, so the same redirect applies. */
+        var o = location.origin;
+        if (o && o !== 'null' && u.indexOf(o + '/') === 0) return B + u.slice(o.length + 1);
+        return u;
+      } catch(e){ return u; }
+    }
     var of = window.fetch;
     if (of) window.fetch = function(i, o){
       var u = (i && i.url) ? i.url : i;
       if (bad(u)) return Promise.resolve(new Response('', {status:204}));
+      if (typeof i === 'string') { var r = rebase(i); if (r !== i) return of.call(this, r, o); }
       return of.apply(this, arguments);
     };
     var oo = window.XMLHttpRequest && window.XMLHttpRequest.prototype.open;
     if (oo) window.XMLHttpRequest.prototype.open = function(m, u){
       if (bad(u)) { arguments[1] = 'data:text/plain,'; }
+      else if (typeof u === 'string') { arguments[1] = rebase(u); }
       return oo.apply(this, arguments);
     };
     if (navigator.sendBeacon) { var ob = navigator.sendBeacon.bind(navigator);
@@ -166,23 +208,28 @@ window.alert=function(){};window.confirm=function(){return false;};window.prompt
     try {
       var osa = Element.prototype.setAttribute;
       Element.prototype.setAttribute = function(n, v){
-        if (n && /^(src|href|data)$/i.test(n) && bad(v)) return;
+        if (n && /^(src|href|data)$/i.test(n)) {
+          if (bad(v)) return;
+          /* Same host-absolute problem, reached through an attribute: an <img> or <audio>
+           * given "/audio/x.flac" resolves against the origin and 404s. */
+          if (typeof v === 'string') arguments[1] = rebase(v);
+        }
         return osa.apply(this, arguments);
       };
     } catch(e){}
     /* Element src= is how most ad tags actually load. */
     try {
-      ['HTMLImageElement','HTMLScriptElement','HTMLIFrameElement'].forEach(function(k){
+      ['HTMLImageElement','HTMLScriptElement','HTMLIFrameElement','HTMLAudioElement','HTMLVideoElement','HTMLSourceElement'].forEach(function(k){
         var P = window[k] && window[k].prototype; if (!P) return;
         var d = Object.getOwnPropertyDescriptor(P, 'src'); if (!d || !d.set) return;
         Object.defineProperty(P, 'src', {
           configurable: true, enumerable: d.enumerable, get: d.get,
-          set: function(v){ if (bad(v)) return; return d.set.call(this, v); }
+          set: function(v){ if (bad(v)) return; return d.set.call(this, typeof v === 'string' ? rebase(v) : v); }
         });
       });
     } catch(e){}
   })();</script>
-<script>window.SURD_GAME={"id":"friday-night-funkin-indie-cross","engine":"generic","base":"https://cdn.jsdelivr.net/gh/playsurd/surd-assets-4@main/friday-night-funkin-indie-cross/","runtime":"https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/va41e0dbc95/","files":{},"config":{},"split":[{"p":"assets/videos/bendy/5.mp4","u":["assets/videos/bendy/5.mp4"],"b":14104703,"m":"video/mp4","pf":1},{"p":"assets/videos/credits.mp4","u":["assets/videos/credits.mp4"],"b":7140400,"m":"video/mp4","pf":1},{"p":"assets/sans/images/sans/bgNM.png","u":["assets/sans/images/sans/bgNM.png"],"b":6753940,"m":"image/png","pf":1},{"p":"assets/videos/intro.mp4","u":["assets/videos/intro.mp4"],"b":6066620,"m":"video/mp4","pf":1},{"p":"assets/songs/despair/Inst.mp3","u":["assets/songs/despair/Inst.mp3"],"b":5955799,"m":"audio/mpeg","pf":1},{"p":"assets/songs/despair/Voices.mp3","u":["assets/songs/despair/Voices.mp3"],"b":5893912,"m":"audio/mpeg","pf":1},{"p":"assets/bendy/images/bendy/hallway.png","u":["assets/bendy/images/bendy/hallway.png"],"b":5818213,"m":"image/png","pf":1},{"p":"assets/videos/cuphead/4.mp4","u":["assets/videos/cuphead/4.mp4"],"b":5243400,"m":"video/mp4","pf":1},{"p":"assets/videos/sans/3b.mp4","u":["assets/videos/sans/3b.mp4"],"b":4182255,"m":"video/mp4","pf":1},{"p":"assets/videos/sans/4b.mp4","u":["assets/videos/sans/4b.mp4"],"b":3869741,"m":"video/mp4","pf":1},{"p":"assets/videos/sans/3.mp4","u":["assets/videos/sans/3.mp4"],"b":3716490,"m":"video/mp4","pf":1},{"p":"assets/songs/bad-time/Inst.mp3","u":["assets/songs/bad-time/Inst.mp3"],"b":3664094,"m":"audio/mpeg","pf":1},{"p":"assets/songs/nightmare-run/Inst.mp3","u":["assets/songs/nightmare-run/Inst.mp3"],"b":3647846,"m":"audio/mpeg","pf":1},{"p":"assets/videos/cuphead/3.mp4","u":["assets/videos/cuphead/3.mp4"],"b":3547916,"m":"video/mp4","pf":1},{"p":"assets/songs/final-stretch/Inst.mp3","u":["assets/songs/final-stretch/Inst.mp3"],"b":3513957,"m":"audio/mpeg","pf":1},{"p":"assets/songs/imminent-demise/Voices.mp3","u":["assets/songs/imminent-demise/Voices.mp3"],"b":3495183,"m":"audio/mpeg","pf":1},{"p":"assets/songs/knockout/Inst.mp3","u":["assets/songs/knockout/Inst.mp3"],"b":3440761,"m":"audio/mpeg","pf":1},{"p":"assets/songs/freaky-machine/Inst.mp3","u":["assets/songs/freaky-machine/Inst.mp3"],"b":3432976,"m":"audio/mpeg","pf":1},{"p":"assets/songs/last-reel/Inst.mp3","u":["assets/songs/last-reel/Inst.mp3"],"b":3374763,"m":"audio/mpeg","pf":1},{"p":"assets/songs/burning-in-hell/Inst.mp3","u":["assets/songs/burning-in-hell/Inst.mp3"],"b":3320431,"m":"audio/mpeg","pf":1},{"p":"assets/videos/sans/4.mp4","u":["assets/videos/sans/4.mp4"],"b":3293290,"m":"video/mp4","pf":1},{"p":"assets/videos/cuphead/1.mp4","u":["assets/videos/cuphead/1.mp4"],"b":3273992,"m":"video/mp4","pf":1},{"p":"assets/songs/bad-time/Voices.mp3","u":["assets/songs/bad-time/Voices.mp3"],"b":3256726,"m":"audio/mpeg","pf":1},{"p":"assets/songs/final-stretch/Voices.mp3","u":["assets/songs/final-stretch/Voices.mp3"],"b":3249052,"m":"audio/mpeg","pf":1},{"p":"assets/images/TitleScREEEEE.png","u":["assets/images/TitleScREEEEE.png"],"b":3230698,"m":"image/png","pf":1},{"p":"assets/songs/imminent-demise/Inst.mp3","u":["assets/songs/imminent-demise/Inst.mp3"],"b":3200493,"m":"audio/mpeg","pf":1},{"p":"assets/songs/knockout/Voices.mp3","u":["assets/songs/knockout/Voices.mp3"],"b":3185027,"m":"audio/mpeg","pf":1},{"p":"assets/songs/nightmare-run/Voices.mp3","u":["assets/songs/nightmare-run/Voices.mp3"],"b":3181230,"m":"audio/mpeg","pf":1},{"p":"assets/songs/freaky-machine/Voices.mp3","u":["assets/songs/freaky-machine/Voices.mp3"],"b":3048935,"m":"audio/mpeg","pf":1},{"p":"assets/videos/cuphead/2.mp4","u":["assets/videos/cuphead/2.mp4"],"b":3030319,"m":"video/mp4","pf":1},{"p":"assets/songs/burning-in-hell/Voices.mp3","u":["assets/songs/burning-in-hell/Voices.mp3"],"b":2980836,"m":"audio/mpeg","pf":1},{"p":"assets/songs/technicolor-tussle/Voices.mp3","u":["assets/songs/technicolor-tussle/Voices.mp3"],"b":2914279,"m":"audio/mpeg","pf":1},{"p":"assets/songs/technicolor-tussle/Inst.mp3","u":["assets/songs/technicolor-tussle/Inst.mp3"],"b":2889290,"m":"audio/mpeg","pf":1},{"p":"assets/songs/last-reel/Voices.mp3","u":["assets/songs/last-reel/Voices.mp3"],"b":2812375,"m":"audio/mpeg","pf":1},{"p":"assets/songs/terrible-sin/Inst.mp3","u":["assets/songs/terrible-sin/Inst.mp3"],"b":2650915,"m":"audio/mpeg","pf":1},{"p":"assets/songs/whoopee/Inst.mp3","u":["assets/songs/whoopee/Inst.mp3"],"b":2644706,"m":"audio/mpeg","pf":1},{"p":"assets/bendy/images/bendy/first/Light.png","u":["assets/bendy/images/bendy/first/Light.png"],"b":2607780,"m":"image/png","pf":1},{"p":"assets/cup/images/cup/bull/hadoken.png","u":["assets/cup/images/cup/bull/hadoken.png"],"b":2571778,"m":"image/png","pf":1},{"p":"assets/songs/whoopee/Voices.mp3","u":["assets/songs/whoopee/Voices.mp3"],"b":2519958,"m":"audio/mpeg","pf":1},{"p":"assets/images/characters/BoyFriend_BendyShade.png","u":["assets/images/characters/BoyFriend_BendyShade.png"],"b":2489208,"m":"image/png","pf":1},{"p":"assets/videos/bendy/4.mp4","u":["assets/videos/bendy/4.mp4"],"b":2439348,"m":"video/mp4","pf":1},{"p":"assets/songs/sansational/Inst.mp3","u":["assets/songs/sansational/Inst.mp3"],"b":2435442,"m":"audio/mpeg","pf":1},{"p":"assets/songs/devils-gambit/Inst.mp3","u":["assets/songs/devils-gambit/Inst.mp3"],"b":2409310,"m":"audio/mpeg","pf":1},{"p":"assets/music/offsetSong.mp3","u":["assets/music/offsetSong.mp3"],"b":2402257,"m":"audio/mpeg","pf":1},{"p":"assets/songs/satanic-funkin/Inst.mp3","u":["assets/songs/satanic-funkin/Inst.mp3"],"b":2396617,"m":"audio/mpeg","pf":1},{"p":"assets/songs/snake-eyes/Inst.mp3","u":["assets/songs/snake-eyes/Inst.mp3"],"b":2368346,"m":"audio/mpeg","pf":1},{"p":"assets/music/freakyMenu.mp3","u":["assets/music/freakyMenu.mp3"],"b":2364058,"m":"audio/mpeg","pf":1},{"p":"assets/songs/devils-gambit/Voices.mp3","u":["assets/songs/devils-gambit/Voices.mp3"],"b":2352690,"m":"audio/mpeg","pf":1},{"p":"assets/songs/ritual/Voices.mp3","u":["assets/songs/ritual/Voices.mp3"],"b":2324227,"m":"audio/mpeg","pf":1},{"p":"assets/images/characters/BoyFriend_SansWT.png","u":["assets/images/characters/BoyFriend_SansWT.png"],"b":2320675,"m":"image/png","pf":1},{"p":"assets/songs/ritual/Inst.mp3","u":["assets/songs/ritual/Inst.mp3"],"b":2307057,"m":"audio/mpeg","pf":1},{"p":"assets/songs/bonedoggle/Inst.mp3","u":["assets/songs/bonedoggle/Inst.mp3"],"b":2303522,"m":"audio/mpeg","pf":1},{"p":"assets/songs/snake-eyes/Voices.mp3","u":["assets/songs/snake-eyes/Voices.mp3"],"b":2202860,"m":"audio/mpeg","pf":1},{"p":"assets/songs/bonedoggle/Voices.mp3","u":["assets/songs/bonedoggle/Voices.mp3"],"b":2168459,"m":"audio/mpeg","pf":1},{"p":"assets/songs/terrible-sin/Voices.mp3","u":["assets/songs/terrible-sin/Voices.mp3"],"b":2157899,"m":"audio/mpeg","pf":1},{"p":"assets/cup/images/cup/oldeffect.png","u":["assets/cup/images/cup/oldeffect.png"],"b":2065573,"m":"image/png","pf":1},{"p":"assets/songs/satanic-funkin/Voices.mp3","u":["assets/songs/satanic-funkin/Voices.mp3"],"b":2043638,"m":"audio/mpeg","pf":1},{"p":"assets/videos/bendy/2.mp4","u":["assets/videos/bendy/2.mp4"],"b":2005765,"m":"video/mp4","pf":1},{"p":"assets/videos/sans/2.mp4","u":["assets/videos/sans/2.mp4"],"b":1984159,"m":"video/mp4","pf":1},{"p":"assets/images/characters/GF_assets.png","u":["assets/images/characters/GF_assets.png"],"b":1968694,"m":"image/png","pf":1},{"p":"assets/videos/bendy/1.mp4","u":["assets/videos/bendy/1.mp4"],"b":1863336,"m":"video/mp4","pf":1},{"p":"assets/images/characters/Sans_Phase_3.png","u":["assets/images/characters/Sans_Phase_3.png"],"b":1844150,"m":"image/png","pf":1},{"p":"assets/songs/sansational/Voices.mp3","u":["assets/songs/sansational/Voices.mp3"],"b":1840233,"m":"audio/mpeg","pf":1},{"p":"assets/cup/images/cup/bull/NMcupheadAttacks.png","u":["assets/cup/images/cup/bull/NMcupheadAttacks.png"],"b":1802082,"m":"image/png","pf":1},{"p":"assets/videos/sans/1.mp4","u":["assets/videos/sans/1.mp4"],"b":1718271,"m":"video/mp4","pf":1},{"p":"assets/songs/bad-to-the-bone/Inst.mp3","u":["assets/songs/bad-to-the-bone/Inst.mp3"],"b":1669242,"m":"audio/mpeg","pf":1},{"p":"assets/videos/bendy/1.5.mp4","u":["assets/videos/bendy/1.5.mp4"],"b":1624684,"m":"video/mp4","pf":1},{"p":"assets/shared/music/pausesans.mp3","u":["assets/shared/music/pausesans.mp3"],"b":1537800,"m":"audio/mpeg","pf":1},{"p":"assets/images/characters/SansWF.png","u":["assets/images/characters/SansWF.png"],"b":1493033,"m":"image/png","pf":1},{"p":"assets/images/characters/BoyFriend_3rdPhase.png","u":["assets/images/characters/BoyFriend_3rdPhase.png"],"b":1436311,"m":"image/png","pf":1},{"p":"assets/songs/bad-to-the-bone/Voices.mp3","u":["assets/songs/bad-to-the-bone/Voices.mp3"],"b":1424851,"m":"audio/mpeg","pf":1},{"p":"assets/images/characters/BOYFRIEND.png","u":["assets/images/characters/BOYFRIEND.png"],"b":1403652,"m":"image/png","pf":1},{"p":"assets/images/characters/Sans.png","u":["assets/images/characters/Sans.png"],"b":1391301,"m":"image/png","pf":1},{"p":"assets/images/characters/BoyFriend_Rain.png","u":["assets/images/characters/BoyFriend_Rain.png"],"b":1390166,"m":"image/png","pf":1},{"p":"assets/bendy/images/bendy/Fyre.png","u":["assets/bendy/images/bendy/Fyre.png"],"b":1364614,"m":"image/png","pf":1},{"p":"assets/images/characters/Chara.png","u":["assets/images/characters/Chara.png"],"b":1347375,"m":"image/png","pf":1},{"p":"assets/bendy/images/bendy/stairs/scrollingBG.png","u":["assets/bendy/images/bendy/stairs/scrollingBG.png"],"b":1113059,"m":"image/png","pf":1}]};</script>
+<script>window.SURD_GAME={"id":"friday-night-funkin-indie-cross","engine":"generic","base":"https://cdn.jsdelivr.net/gh/playsurd/surd-assets-4@main/friday-night-funkin-indie-cross/","runtime":"https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/v5c425bed98/","files":{},"config":{},"split":[{"p":"assets/videos/bendy/5.mp4","u":["assets/videos/bendy/5.mp4"],"b":14104703,"m":"video/mp4","pf":1},{"p":"assets/videos/credits.mp4","u":["assets/videos/credits.mp4"],"b":7140400,"m":"video/mp4","pf":1},{"p":"assets/sans/images/sans/bgNM.png","u":["assets/sans/images/sans/bgNM.png"],"b":6753940,"m":"image/png","pf":1},{"p":"assets/videos/intro.mp4","u":["assets/videos/intro.mp4"],"b":6066620,"m":"video/mp4","pf":1},{"p":"assets/songs/despair/Inst.mp3","u":["assets/songs/despair/Inst.mp3"],"b":5955799,"m":"audio/mpeg","pf":1},{"p":"assets/songs/despair/Voices.mp3","u":["assets/songs/despair/Voices.mp3"],"b":5893912,"m":"audio/mpeg","pf":1},{"p":"assets/bendy/images/bendy/hallway.png","u":["assets/bendy/images/bendy/hallway.png"],"b":5818213,"m":"image/png","pf":1},{"p":"assets/videos/cuphead/4.mp4","u":["assets/videos/cuphead/4.mp4"],"b":5243400,"m":"video/mp4","pf":1},{"p":"assets/videos/sans/3b.mp4","u":["assets/videos/sans/3b.mp4"],"b":4182255,"m":"video/mp4","pf":1},{"p":"assets/videos/sans/4b.mp4","u":["assets/videos/sans/4b.mp4"],"b":3869741,"m":"video/mp4","pf":1},{"p":"assets/videos/sans/3.mp4","u":["assets/videos/sans/3.mp4"],"b":3716490,"m":"video/mp4","pf":1},{"p":"assets/songs/bad-time/Inst.mp3","u":["assets/songs/bad-time/Inst.mp3"],"b":3664094,"m":"audio/mpeg","pf":1},{"p":"assets/songs/nightmare-run/Inst.mp3","u":["assets/songs/nightmare-run/Inst.mp3"],"b":3647846,"m":"audio/mpeg","pf":1},{"p":"assets/videos/cuphead/3.mp4","u":["assets/videos/cuphead/3.mp4"],"b":3547916,"m":"video/mp4","pf":1},{"p":"assets/songs/final-stretch/Inst.mp3","u":["assets/songs/final-stretch/Inst.mp3"],"b":3513957,"m":"audio/mpeg","pf":1},{"p":"assets/songs/imminent-demise/Voices.mp3","u":["assets/songs/imminent-demise/Voices.mp3"],"b":3495183,"m":"audio/mpeg","pf":1},{"p":"assets/songs/knockout/Inst.mp3","u":["assets/songs/knockout/Inst.mp3"],"b":3440761,"m":"audio/mpeg","pf":1},{"p":"assets/songs/freaky-machine/Inst.mp3","u":["assets/songs/freaky-machine/Inst.mp3"],"b":3432976,"m":"audio/mpeg","pf":1},{"p":"assets/songs/last-reel/Inst.mp3","u":["assets/songs/last-reel/Inst.mp3"],"b":3374763,"m":"audio/mpeg","pf":1},{"p":"assets/songs/burning-in-hell/Inst.mp3","u":["assets/songs/burning-in-hell/Inst.mp3"],"b":3320431,"m":"audio/mpeg","pf":1},{"p":"assets/videos/sans/4.mp4","u":["assets/videos/sans/4.mp4"],"b":3293290,"m":"video/mp4","pf":1},{"p":"assets/videos/cuphead/1.mp4","u":["assets/videos/cuphead/1.mp4"],"b":3273992,"m":"video/mp4","pf":1},{"p":"assets/songs/bad-time/Voices.mp3","u":["assets/songs/bad-time/Voices.mp3"],"b":3256726,"m":"audio/mpeg","pf":1},{"p":"assets/songs/final-stretch/Voices.mp3","u":["assets/songs/final-stretch/Voices.mp3"],"b":3249052,"m":"audio/mpeg","pf":1},{"p":"assets/images/TitleScREEEEE.png","u":["assets/images/TitleScREEEEE.png"],"b":3230698,"m":"image/png","pf":1},{"p":"assets/songs/imminent-demise/Inst.mp3","u":["assets/songs/imminent-demise/Inst.mp3"],"b":3200493,"m":"audio/mpeg","pf":1},{"p":"assets/songs/knockout/Voices.mp3","u":["assets/songs/knockout/Voices.mp3"],"b":3185027,"m":"audio/mpeg","pf":1},{"p":"assets/songs/nightmare-run/Voices.mp3","u":["assets/songs/nightmare-run/Voices.mp3"],"b":3181230,"m":"audio/mpeg","pf":1},{"p":"assets/songs/freaky-machine/Voices.mp3","u":["assets/songs/freaky-machine/Voices.mp3"],"b":3048935,"m":"audio/mpeg","pf":1},{"p":"assets/videos/cuphead/2.mp4","u":["assets/videos/cuphead/2.mp4"],"b":3030319,"m":"video/mp4","pf":1},{"p":"assets/songs/burning-in-hell/Voices.mp3","u":["assets/songs/burning-in-hell/Voices.mp3"],"b":2980836,"m":"audio/mpeg","pf":1},{"p":"assets/songs/technicolor-tussle/Voices.mp3","u":["assets/songs/technicolor-tussle/Voices.mp3"],"b":2914279,"m":"audio/mpeg","pf":1},{"p":"assets/songs/technicolor-tussle/Inst.mp3","u":["assets/songs/technicolor-tussle/Inst.mp3"],"b":2889290,"m":"audio/mpeg","pf":1},{"p":"assets/songs/last-reel/Voices.mp3","u":["assets/songs/last-reel/Voices.mp3"],"b":2812375,"m":"audio/mpeg","pf":1},{"p":"assets/songs/terrible-sin/Inst.mp3","u":["assets/songs/terrible-sin/Inst.mp3"],"b":2650915,"m":"audio/mpeg","pf":1},{"p":"assets/songs/whoopee/Inst.mp3","u":["assets/songs/whoopee/Inst.mp3"],"b":2644706,"m":"audio/mpeg","pf":1},{"p":"assets/bendy/images/bendy/first/Light.png","u":["assets/bendy/images/bendy/first/Light.png"],"b":2607780,"m":"image/png","pf":1},{"p":"assets/cup/images/cup/bull/hadoken.png","u":["assets/cup/images/cup/bull/hadoken.png"],"b":2571778,"m":"image/png","pf":1},{"p":"assets/songs/whoopee/Voices.mp3","u":["assets/songs/whoopee/Voices.mp3"],"b":2519958,"m":"audio/mpeg","pf":1},{"p":"assets/images/characters/BoyFriend_BendyShade.png","u":["assets/images/characters/BoyFriend_BendyShade.png"],"b":2489208,"m":"image/png","pf":1},{"p":"assets/videos/bendy/4.mp4","u":["assets/videos/bendy/4.mp4"],"b":2439348,"m":"video/mp4","pf":1},{"p":"assets/songs/sansational/Inst.mp3","u":["assets/songs/sansational/Inst.mp3"],"b":2435442,"m":"audio/mpeg","pf":1},{"p":"assets/songs/devils-gambit/Inst.mp3","u":["assets/songs/devils-gambit/Inst.mp3"],"b":2409310,"m":"audio/mpeg","pf":1},{"p":"assets/music/offsetSong.mp3","u":["assets/music/offsetSong.mp3"],"b":2402257,"m":"audio/mpeg","pf":1},{"p":"assets/songs/satanic-funkin/Inst.mp3","u":["assets/songs/satanic-funkin/Inst.mp3"],"b":2396617,"m":"audio/mpeg","pf":1},{"p":"assets/songs/snake-eyes/Inst.mp3","u":["assets/songs/snake-eyes/Inst.mp3"],"b":2368346,"m":"audio/mpeg","pf":1},{"p":"assets/music/freakyMenu.mp3","u":["assets/music/freakyMenu.mp3"],"b":2364058,"m":"audio/mpeg","pf":1},{"p":"assets/songs/devils-gambit/Voices.mp3","u":["assets/songs/devils-gambit/Voices.mp3"],"b":2352690,"m":"audio/mpeg","pf":1},{"p":"assets/songs/ritual/Voices.mp3","u":["assets/songs/ritual/Voices.mp3"],"b":2324227,"m":"audio/mpeg","pf":1},{"p":"assets/images/characters/BoyFriend_SansWT.png","u":["assets/images/characters/BoyFriend_SansWT.png"],"b":2320675,"m":"image/png","pf":1},{"p":"assets/songs/ritual/Inst.mp3","u":["assets/songs/ritual/Inst.mp3"],"b":2307057,"m":"audio/mpeg","pf":1},{"p":"assets/songs/bonedoggle/Inst.mp3","u":["assets/songs/bonedoggle/Inst.mp3"],"b":2303522,"m":"audio/mpeg","pf":1},{"p":"assets/songs/snake-eyes/Voices.mp3","u":["assets/songs/snake-eyes/Voices.mp3"],"b":2202860,"m":"audio/mpeg","pf":1},{"p":"assets/songs/bonedoggle/Voices.mp3","u":["assets/songs/bonedoggle/Voices.mp3"],"b":2168459,"m":"audio/mpeg","pf":1},{"p":"assets/songs/terrible-sin/Voices.mp3","u":["assets/songs/terrible-sin/Voices.mp3"],"b":2157899,"m":"audio/mpeg","pf":1},{"p":"assets/cup/images/cup/oldeffect.png","u":["assets/cup/images/cup/oldeffect.png"],"b":2065573,"m":"image/png","pf":1},{"p":"assets/songs/satanic-funkin/Voices.mp3","u":["assets/songs/satanic-funkin/Voices.mp3"],"b":2043638,"m":"audio/mpeg","pf":1},{"p":"assets/videos/bendy/2.mp4","u":["assets/videos/bendy/2.mp4"],"b":2005765,"m":"video/mp4","pf":1},{"p":"assets/videos/sans/2.mp4","u":["assets/videos/sans/2.mp4"],"b":1984159,"m":"video/mp4","pf":1},{"p":"assets/images/characters/GF_assets.png","u":["assets/images/characters/GF_assets.png"],"b":1968694,"m":"image/png","pf":1},{"p":"assets/videos/bendy/1.mp4","u":["assets/videos/bendy/1.mp4"],"b":1863336,"m":"video/mp4","pf":1},{"p":"assets/images/characters/Sans_Phase_3.png","u":["assets/images/characters/Sans_Phase_3.png"],"b":1844150,"m":"image/png","pf":1},{"p":"assets/songs/sansational/Voices.mp3","u":["assets/songs/sansational/Voices.mp3"],"b":1840233,"m":"audio/mpeg","pf":1},{"p":"assets/cup/images/cup/bull/NMcupheadAttacks.png","u":["assets/cup/images/cup/bull/NMcupheadAttacks.png"],"b":1802082,"m":"image/png","pf":1},{"p":"assets/videos/sans/1.mp4","u":["assets/videos/sans/1.mp4"],"b":1718271,"m":"video/mp4","pf":1},{"p":"assets/songs/bad-to-the-bone/Inst.mp3","u":["assets/songs/bad-to-the-bone/Inst.mp3"],"b":1669242,"m":"audio/mpeg","pf":1},{"p":"assets/videos/bendy/1.5.mp4","u":["assets/videos/bendy/1.5.mp4"],"b":1624684,"m":"video/mp4","pf":1},{"p":"assets/shared/music/pausesans.mp3","u":["assets/shared/music/pausesans.mp3"],"b":1537800,"m":"audio/mpeg","pf":1},{"p":"assets/images/characters/SansWF.png","u":["assets/images/characters/SansWF.png"],"b":1493033,"m":"image/png","pf":1},{"p":"assets/images/characters/BoyFriend_3rdPhase.png","u":["assets/images/characters/BoyFriend_3rdPhase.png"],"b":1436311,"m":"image/png","pf":1},{"p":"assets/songs/bad-to-the-bone/Voices.mp3","u":["assets/songs/bad-to-the-bone/Voices.mp3"],"b":1424851,"m":"audio/mpeg","pf":1},{"p":"assets/images/characters/BOYFRIEND.png","u":["assets/images/characters/BOYFRIEND.png"],"b":1403652,"m":"image/png","pf":1},{"p":"assets/images/characters/Sans.png","u":["assets/images/characters/Sans.png"],"b":1391301,"m":"image/png","pf":1},{"p":"assets/images/characters/BoyFriend_Rain.png","u":["assets/images/characters/BoyFriend_Rain.png"],"b":1390166,"m":"image/png","pf":1},{"p":"assets/bendy/images/bendy/Fyre.png","u":["assets/bendy/images/bendy/Fyre.png"],"b":1364614,"m":"image/png","pf":1},{"p":"assets/images/characters/Chara.png","u":["assets/images/characters/Chara.png"],"b":1347375,"m":"image/png","pf":1},{"p":"assets/bendy/images/bendy/stairs/scrollingBG.png","u":["assets/bendy/images/bendy/stairs/scrollingBG.png"],"b":1113059,"m":"image/png","pf":1}]};</script>
 <script>(function () {
   var M = window.SURD_GAME;
   var table = M && M.split;
@@ -235,17 +282,41 @@ window.alert=function(){};window.confirm=function(){return false;};window.prompt
     blobs[u] = blob; urlOf[e.p] = u;
     return u;
   }
+  function mirrorUrl(url) {
+    var m = /^https:\/\/cdn\.jsdelivr\.net\/gh\/([^/]+)\/([^@/]+)@([^/]+)\/(.*)$/.exec(url || '');
+    return m ? 'https://raw.githubusercontent.com/' + m[1] + '/' + m[2] + '/' + m[3] + '/' + m[4] : null;
+  }
+  var TRANSIENT = { 403: 1, 408: 1, 425: 1, 429: 1, 500: 1, 502: 1, 503: 1, 504: 1, 522: 1 };
+  function fetchPart(url, attempt) {
+    attempt = attempt || 1;
+    var alt = mirrorUrl(url);
+    var target = (alt && attempt % 2 === 0) ? alt : url;
+    return nativeFetch(target).then(function (r) {
+      if (r.ok) return r.blob();
+      var e = new Error('surd: ' + r.status + ' on ' + target);
+      e.status = r.status;
+      throw e;
+    })['catch'](function (err) {
+      var retryable = !err.status || TRANSIENT[err.status];
+      if (attempt >= 4 || (!retryable && attempt > 1)) throw err;
+      return new Promise(function (r) { setTimeout(r, Math.min(8000, 400 * attempt * attempt)); })
+        .then(function () { return fetchPart(url, attempt + 1); });
+    });
+  }
   function assemble(e) {
     if (urlOf[e.p]) return Promise.resolve(urlOf[e.p]);
     if (pending[e.p]) return pending[e.p];
     var urls = partUrls(e);
     var got = new Array(urls.length);
-    var p = Promise.all(urls.map(function (u, n) {
-      return nativeFetch(u).then(function (r) {
-        if (!r.ok) throw new Error('surd: ' + r.status + ' on ' + u);
-        return r.blob();
-      }).then(function (b) { got[n] = b; });
-    })).then(function () { return finish(e, got); });
+    var next = 0;
+    function lane() {
+      if (next >= urls.length) return Promise.resolve();
+      var n = next++;
+      return fetchPart(urls[n]).then(function (b) { got[n] = b; return lane(); });
+    }
+    var lanes = [];
+    for (var k = 0; k < Math.min(6, urls.length); k++) lanes.push(lane());
+    var p = Promise.all(lanes).then(function () { return finish(e, got); });
     pending[e.p] = p;
     return p;
   }
@@ -334,7 +405,7 @@ window.alert=function(){};window.confirm=function(){return false;};window.prompt
     for (i = 0; i < LANES && i < pf.length; i++) pump();
   }
 })();</script>
-<script crossorigin="anonymous" src="https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/va41e0dbc95/runtime.js"></script>
+<script crossorigin="anonymous" src="https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/v5c425bed98/runtime.js"></script>
 
 
   <meta charset="utf-8">
