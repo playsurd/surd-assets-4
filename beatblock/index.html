@@ -279,7 +279,7 @@ window.alert=function(){};window.confirm=function(){return false;};window.prompt
       });
     } catch(e){}
   })();</script>
-<script>window.SURD_GAME={"id":"beatblock","engine":"generic","base":"https://cdn.jsdelivr.net/gh/playsurd/surd-assets-4@main/beatblock/","runtime":"https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/v339e1c6514/","files":{},"config":{},"split":[{"p":"game.love.part000","u":["game.love.part000"],"b":19922944,"m":"application/octet-stream","pf":1},{"p":"game.love.part001","u":["game.love.part001"],"b":19922944,"m":"application/octet-stream","pf":1},{"p":"game.love.part002","u":["game.love.part002"],"b":19922944,"m":"application/octet-stream","pf":1},{"p":"game.love.part003","u":["game.love.part003"],"b":19922944,"m":"application/octet-stream","pf":1},{"p":"game.love.part004","u":["game.love.part004"],"b":19922944,"m":"application/octet-stream","pf":1},{"p":"11.5/release/love.wasm","u":["11.5/release/love.wasm"],"b":4745898,"m":"application/wasm","pf":1},{"p":"11.5/compat/love.wasm","u":["11.5/compat/love.wasm"],"b":4720510,"m":"application/wasm","pf":1}]};</script>
+<script>window.SURD_GAME={"id":"beatblock","engine":"generic","base":"https://cdn.jsdelivr.net/gh/playsurd/surd-assets-4@main/beatblock/","runtime":"https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/v8caca1eedf/","files":{},"config":{},"split":[{"p":"game.love.part000","u":["game.love.part000"],"b":19922944,"m":"application/octet-stream","pf":1},{"p":"game.love.part001","u":["game.love.part001"],"b":19922944,"m":"application/octet-stream","pf":1},{"p":"game.love.part002","u":["game.love.part002"],"b":19922944,"m":"application/octet-stream","pf":1},{"p":"game.love.part003","u":["game.love.part003"],"b":19922944,"m":"application/octet-stream","pf":1},{"p":"game.love.part004","u":["game.love.part004"],"b":19922944,"m":"application/octet-stream","pf":1},{"p":"11.5/release/love.wasm","u":["11.5/release/love.wasm"],"b":4745898,"m":"application/wasm","pf":1},{"p":"11.5/compat/love.wasm","u":["11.5/compat/love.wasm"],"b":4720510,"m":"application/wasm","pf":1}]};</script>
 <script>(function () {
   var M = window.SURD_GAME;
   var table = M && M.split;
@@ -304,6 +304,10 @@ window.alert=function(){};window.confirm=function(){return false;};window.prompt
     var q = url.split('#')[0].split('?')[0];
     try { q = decodeURIComponent(q); } catch (e) {}
     q = q.replace(/^\.\//, '');
+    try {
+      var ext = M && M.ext;
+      if (ext && ext[q]) q = ext[q];
+    } catch (e) {}
     var hit = exact(q);
     return hit || virtualPart(q);
   }
@@ -455,7 +459,7 @@ window.alert=function(){};window.confirm=function(){return false;};window.prompt
     for (i = 0; i < LANES && i < pf.length; i++) pump();
   }
 })();</script>
-<script crossorigin="anonymous" src="https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/v339e1c6514/runtime.js"></script>
+<script crossorigin="anonymous" src="https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/v8caca1eedf/runtime.js"></script>
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width,user-scalable=no" />
