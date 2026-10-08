@@ -1,0 +1,34 @@
+{
+  "version" : 4,
+  "hosts" : {
+    "US1" : "crazy4ca1.stealbrain.com",
+    "US2" : "crazy4ca2.stealbrain.com",
+    "US3" : "crazy4us1.stealbrain.com",
+    "US4" : "crazy4us2.stealbrain.com",
+    "US5" : "crazy4us3.stealbrain.com",
+    "EU1" : "crazy4eu1.stealbrain.com",
+    "EU2" : "crazy4eu2.stealbrain.com",
+    "EU3" : "crazy4eu3.stealbrain.com",
+    "EU4" : "crazy4eu4.stealbrain.com",
+    "EU5" : "crazy4eu5.stealbrain.com",
+    "SA1" : "crazy4sa1.stealbrain.com",
+    "SA2" : "crazy4sa2.stealbrain.com",
+    "SA3" : "crazy4sa3.stealbrain.com",
+    "SA4" : "crazy4sa4.stealbrain.com",
+    "AE1" : "crazy4asia1.stealbrain.com",
+    "AE2" : "crazy4asia2.stealbrain.com",
+    "AE3" : "crazy4asia3.stealbrain.com",
+    "AE4" : "crazy4asia4.stealbrain.com"
+  },
+  "regions" :
+  {
+    "US" : ["US1", "US2", "US3", "US4", "US5"],
+    "EU" : ["EU1", "EU2", "EU3", "EU4", "EU5"],
+    "SA" : ["SA1", "SA2", "SA3", "SA4"],
+    "AS" : ["AE1", "AE2", "AE3", "AE4"],
+    "AE" : ["AE1", "AE2", "AE3", "AE4"],
+    "OC" : ["AE1", "AE2", "AE3", "AE4"],
+    "RU" : ["EU1", "EU2", "EU3", "EU4", "EU5"]
+  },
+  "reserved" : ["EU3", "US3"]
+}
