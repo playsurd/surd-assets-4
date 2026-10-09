@@ -1,0 +1,286 @@
+{
+  "adConfig": {
+    "showBanner": false,
+    "showInterstitial": true,
+    "interstitialChance": 50,
+    "interstitialTimeout": 60000,
+    "providers": [
+      {
+        "google": {
+        }
+      },
+      {
+        "facebook": {
+        }
+      }
+    ]
+  },
+  "crosspromoteConfig": [
+    {
+      "androidImage": "cdn.frvr.com/cross/SolitaireFRVR.jpg",
+      "androidUrl": "market://details?id=com.frvr.solitaire",
+      "iOSImage": "cdn.frvr.com/cross/SolitaireFRVR.jpg",
+      "iOSUrl": "https://itunes.apple.com/app/id911820971",
+      "facebookImage": "cdn.frvr.com/cross/SolitaireFRVR.jpg",
+      "facebookUrl": "https://apps.facebook.com/solitairefrvr/",
+      "webImage": "cdn.frvr.com/cross/SolitaireFRVR.jpg",
+      "webUrl": "http://solitaire.frvr.com/",
+      "chromeImage": "i/chrome/SolitaireFRVR.jpg",
+      "chromeUrl": "https://chrome.google.com/webstore/detail/solitaire-frvr/mplfdafmfpnlodgbkhonknngnoplghea"
+    },
+    {
+      "webImage": "cdn.frvr.com/cross/harpoon.jpg",
+      "webUrl": "http://harpoon.frvr.com/",
+      "androidImage": "cdn.frvr.com/cross/harpoon.jpg",
+      "androidUrl": "market://details?id=com.frvr.harpoon",
+      "iOSImage": "cdn.frvr.com/cross/harpoon.jpg",
+      "iOSUrl": "http://itunes.apple.com/app/id1359699260",
+      "facebookImage": "cdn.frvr.com/cross/harpoon.jpg",
+      "facebookUrl": "https://apps.facebook.com/harpoonfrvr",
+      "facebookInstantGameImage": "https://cdn.frvr.com/cross/harpoonicon.png",
+      "facebookInstantGameId": "195023444418553"
+    },
+    {
+      "webImage": "cdn.frvr.com/cross/trigon.jpg",
+      "webUrl": "http://trigon.frvr.com/",
+      "androidImage": "cdn.frvr.com/cross/trigon.jpg",
+      "androidUrl": "market://details?id=com.frvr.trigon",
+      "iOSImage": "cdn.frvr.com/cross/trigon.jpg",
+      "iOSUrl": "http://itunes.apple.com/app/id1225933016",
+      "facebookImage": "cdn.frvr.com/cross/trigon.jpg",
+      "facebookUrl": "https://apps.facebook.com/trigonfrvr",
+      "facebookInstantGameImage": "https://cdn.frvr.com/cross/trigonicon.png",
+      "facebookInstantGameId": "998668500264474",
+      "samsungImage": "cdn.frvr.com/cross/trigon.jpg",
+      "samsungUrl": "samsungapps://ProductDetail/com.frvr.trigon"
+    },
+    {
+      "webImage": "cdn.frvr.com/cross/balloon.jpg",
+      "webUrl": "http://balloon.frvr.com/",
+      "androidImage": "cdn.frvr.com/cross/balloon.jpg",
+      "androidUrl": "market://details?id=com.frvr.balloon",
+      "iOSImage": "cdn.frvr.com/cross/balloon.jpg",
+      "iOSUrl": "http://itunes.apple.com/app/id1219045712",
+      "facebookImage": "cdn.frvr.com/cross/balloon.jpg",
+      "facebookUrl": "https://apps.facebook.com/balloonfrvr",
+      "facebookInstantGameImage": "https://cdn.frvr.com/cross/balloonicon.png",
+      "facebookInstantGameId": "1276179635798913",
+      "samsungImage": "cdn.frvr.com/cross/balloon.jpg",
+      "samsungUrl": "samsungapps://ProductDetail/com.frvr.balloon"
+    },
+    {
+      "webImage": "cdn.frvr.com/cross/kickup.jpg",
+      "webUrl": "http://kickup.frvr.com/",
+      "androidImage": "cdn.frvr.com/cross/kickup.jpg",
+      "androidUrl": "market://details?id=com.frvr.kickup",
+      "iOSImage": "cdn.frvr.com/cross/kickup.jpg",
+      "iOSUrl": "http://itunes.apple.com/app/id1282939783",
+      "facebookImage": "cdn.frvr.com/cross/kickup.jpg",
+      "facebookUrl": "https://apps.facebook.com/kickupfrvr",
+      "facebookInstantGameImage": "https://cdn.frvr.com/cross/kickupicon.png",
+      "facebookInstantGameId": "1996222340600006"
+    },
+    {
+      "webImage": "cdn.frvr.com/cross/football.jpg",
+      "webUrl": "http://football.frvr.com/",
+      "androidImage": "cdn.frvr.com/cross/football.jpg",
+      "androidUrl": "market://details?id=com.frvr.football2",
+      "iOSImage": "cdn.frvr.com/cross/football.jpg",
+      "iOSUrl": "http://itunes.apple.com/app/id1343917030",
+      "facebookImage": "cdn.frvr.com/cross/football.jpg",
+      "facebookUrl": "https://apps.facebook.com/footballfrvr",
+      "facebookInstantGameImage": "https://cdn.frvr.com/cross/footballicon.png",
+      "facebookInstantGameId": "1005226719625031"
+    },
+    {
+      "webImage": "cdn.frvr.com/cross/nonogram.jpg",
+      "webUrl": "http://nonogram.frvr.com/",
+      "androidImage": "cdn.frvr.com/cross/nonogram.jpg",
+      "androidUrl": "market://details?id=com.frvr.nonogram",
+      "iOSImage": "cdn.frvr.com/cross/nonogram.jpg",
+      "iOSUrl": "http://itunes.apple.com/app/id1227752922",
+      "facebookImage": "cdn.frvr.com/cross/nonogram.jpg",
+      "facebookUrl": "https://apps.facebook.com/nonogramfrvr",
+      "facebookInstantGameImage": "https://cdn.frvr.com/cross/nonogramicon.png",
+      "facebookInstantGameId": "1676499509323253",
+      "samsungImage": "cdn.frvr.com/cross/nonogram.jpg",
+      "samsungUrl": "samsungapps://ProductDetail/com.frvr.nonogram"
+    },
+    {
+      "webImage": "cdn.frvr.com/cross/trim.jpg",
+      "webUrl": "http://trim.frvr.com/",
+      "androidImage": "cdn.frvr.com/cross/trim.jpg",
+      "androidUrl": "market://details?id=com.frvr.trim2",
+      "iOSImage": "cdn.frvr.com/cross/trim.jpg",
+      "iOSUrl": "http://itunes.apple.com/app/id1343915488",
+      "facebookImage": "cdn.frvr.com/cross/trim.jpg",
+      "facebookUrl": "https://apps.facebook.com/trimfrvr",
+      "facebookInstantGameImage": "https://cdn.frvr.com/cross/trimicon.png",
+      "facebookInstantGameId": "209512122947536"
+    },
+    {
+      "webImage": "cdn.frvr.com/cross/remove.jpg",
+      "webUrl": "http://remove.frvr.com/",
+      "androidImage": "cdn.frvr.com/cross/remove.jpg",
+      "androidUrl": "market://details?id=com.frvr.remove2",
+      "iOSImage": "cdn.frvr.com/cross/remove.jpg",
+      "iOSUrl": "http://itunes.apple.com/app/id1220376539",
+      "facebookImage": "cdn.frvr.com/cross/remove.jpg",
+      "facebookUrl": "https://apps.facebook.com/removefrvr/",
+      "facebookInstantGameImage": "https://cdn.frvr.com/cross/removeicon.png",
+      "facebookInstantGameId": "168781753757764"
+    },
+    {
+      "webImage": "cdn.frvr.com/cross/cave.jpg",
+      "webUrl": "http://cave.frvr.com/",
+      "androidImage": "cdn.frvr.com/cross/cave.jpg",
+      "androidUrl": "market://details?id=com.frvr.cave",
+      "iOSImage": "cdn.frvr.com/cross/cave.jpg",
+      "iOSUrl": "http://itunes.apple.com/app/id1220374883",
+      "facebookImage": "cdn.frvr.com/cross/cave.jpg",
+      "facebookUrl": "https://apps.facebook.com/cavefrvr",
+      "facebookInstantGameImage": "https://cdn.frvr.com/cross/caveicon.png",
+      "facebookInstantGameId": "282513215569229"
+    },
+    {
+      "webImage": "cdn.frvr.com/cross/hex.jpg",
+      "webUrl": "http://hex.frvr.com/",
+      "androidImage": "cdn.frvr.com/cross/hex.jpg",
+      "androidUrl": "market://details?id=com.frvr.hex",
+      "iOSImage": "cdn.frvr.com/cross/hex.jpg",
+      "iOSUrl": "http://itunes.apple.com/app/id1036010745",
+      "facebookImage": "cdn.frvr.com/cross/hex.jpg",
+      "facebookUrl": "https://apps.facebook.com/hexfrvr",
+      "facebookInstantGameImage": "https://cdn.frvr.com/cross/hexicon.png",
+      "facebookInstantGameId": "226951481038868",
+      "samsungImage": "cdn.frvr.com/cross/hex.jpg",
+      "samsungUrl": "samsungapps://ProductDetail/com.frvr.hex",
+      "chromeImage": "i/chrome/hex.jpg",
+      "chromeUrl": "https://chrome.google.com/webstore/detail/hex-frvr/kibjffjfmagcmicpmogpieelngkcfggn/"
+    },
+    {
+      "webImage": "cdn.frvr.com/cross/lines.jpg",
+      "webUrl": "http://lines.frvr.com/",
+      "androidImage": "cdn.frvr.com/cross/lines.jpg",
+      "androidUrl": "market://details?id=com.frvr.lines",
+      "iOSImage": "cdn.frvr.com/cross/lines.jpg",
+      "iOSUrl": "https://itunes.apple.com/app/apple-store/id1133199471?pt=105280809&ct=InGame%20Upsell&mt=8",
+      "facebookImage": "cdn.frvr.com/cross/lines.jpg",
+      "facebookUrl": "https://apps.facebook.com/linesfrvr",
+      "facebookInstantGameImage": "https://cdn.frvr.com/cross/linesicon.png",
+      "facebookInstantGameId": "FIX_ME",
+      "samsungImage": "cdn.frvr.com/cross/lines.jpg",
+      "samsungUrl": "samsungapps://ProductDetail/com.frvr.lines"
+    },
+    {
+      "webImage": "cdn.frvr.com/cross/goldmahjong.jpg",
+      "webUrl": "http://goldmahjong.frvr.com/",
+      "androidImage": "cdn.frvr.com/cross/goldmahjong.jpg",
+      "androidUrl": "market://details?id=com.frvr.goldmahjong",
+      "iOSImage": "cdn.frvr.com/cross/goldmahjong.jpg",
+      "iOSUrl": "http://itunes.apple.com/app/id1260479815",
+      "facebookImage": "cdn.frvr.com/cross/goldmahjong.jpg",
+      "facebookUrl": "https://apps.facebook.com/goldmahjongfrvr",
+      "facebookInstantGameImage": "https://cdn.frvr.com/cross/goldmahjongicon.png",
+      "facebookInstantGameId": "705717463097925"
+    },
+    {
+      "webImage": "cdn.frvr.com/cross/stackthree.jpg",
+      "webUrl": "http://stackthree.frvr.com/",
+      "androidImage": "cdn.frvr.com/cross/stackthree.jpg",
+      "androidUrl": "market://details?id=com.frvr.stackthree",
+      "iOSImage": "cdn.frvr.com/cross/stackthree.jpg",
+      "iOSUrl": "http://itunes.apple.com/app/id1355649105",
+      "facebookImage": "cdn.frvr.com/cross/stackthree.jpg",
+      "facebookUrl": "https://apps.facebook.com/stackthreefrvr",
+      "facebookInstantGameImage": "https://cdn.frvr.com/cross/stackthreeicon.png",
+      "facebookInstantGameId": "213428599445340"
+    },
+    {
+      "webImage": "cdn.frvr.com/cross/basketball.jpg",
+      "webUrl": "http://basketball.frvr.com/",
+      "androidImage": "cdn.frvr.com/cross/basketball.jpg",
+      "androidUrl": "market://details?id=com.frvr.basketball",
+      "iOSImage": "cdn.frvr.com/cross/basketball.jpg",
+      "iOSUrl": "http://itunes.apple.com/app/id1185836177",
+      "facebookImage": "cdn.frvr.com/cross/basketball.jpg",
+      "facebookUrl": "https://apps.facebook.com/basketballfrvr",
+      "facebookInstantGameImage": "https://cdn.frvr.com/cross/basketballicon.png",
+      "facebookInstantGameId": "800772590062226",
+      "samsungImage": "cdn.frvr.com/cross/basketball.jpg",
+      "samsungUrl": "samsungapps://ProductDetail/com.frvr.basketball"
+    },
+    {
+      "webImage": "cdn.frvr.com/cross/mahjong.jpg",
+      "webUrl": "http://mahjong.frvr.com/",
+      "androidImage": "cdn.frvr.com/cross/mahjong.jpg",
+      "androidUrl": "market://details?id=com.frvr.mahjong",
+      "iOSImage": "cdn.frvr.com/cross/mahjong.jpg",
+      "iOSUrl": "http://itunes.apple.com/app/id1100087485",
+      "facebookImage": "cdn.frvr.com/cross/mahjong.jpg",
+      "facebookUrl": "https://apps.facebook.com/mahjongfrvr",
+      "facebookInstantGameImage": "https://cdn.frvr.com/cross/mahjongicon.png",
+      "facebookInstantGameId": "141673119867414",
+      "samsungImage": "cdn.frvr.com/cross/mahjong.jpg",
+      "samsungUrl": "samsungapps://ProductDetail/com.frvr.mahjong",
+      "chromeImage": "i/chrome/mahjong.jpg",
+      "chromeUrl": "https://chrome.google.com/webstore/detail/mahjong-frvr/ifjbgjmaflfjiffgalgflmnhibhgbbeo"
+    },
+    {
+      "webImage": "cdn.frvr.com/cross/curling.jpg",
+      "webUrl": "http://curling.frvr.com/",
+      "facebookImage": "cdn.frvr.com/cross/curling.jpg",
+      "facebookUrl": "https://apps.facebook.com/curlingfrvr",
+      "facebookInstantGameImage": "https://cdn.frvr.com/cross/curlingicon.png",
+      "facebookInstantGameId": "1873489582735242"
+    },
+    {
+      "webImage": "cdn.frvr.com/cross/streak.jpg",
+      "webUrl": "http://streak.frvr.com/",
+      "facebookImage": "cdn.frvr.com/cross/streak.jpg",
+      "facebookUrl": "https://apps.facebook.com/streakfrvr",
+      "facebookInstantGameImage": "https://cdn.frvr.com/cross/streakicon.png",
+      "facebookInstantGameId": "686794478378094"
+    },
+    {
+      "webImage": "cdn.frvr.com/cross/solitaire.jpg",
+      "webUrl": "http://solitaire.frvr.com/",
+      "facebookInstantGameImage": "https://cdn.frvr.com/cross/solitaireicon.png",
+      "facebookInstantGameId": "2335686886442929"
+    },
+    {
+      "webImage": "cdn.frvr.com/cross/darts.jpg",
+      "webUrl": "http://darts.frvr.com/",
+      "facebookImage": "cdn.frvr.com/cross/darts.jpg",
+      "facebookUrl": "https://apps.facebook.com/dartsfrvr/",
+      "facebookInstantGameImage": "https://cdn.frvr.com/cross/dartsicon.png",
+      "facebookInstantGameId": "1576469492400901"
+    },
+    {
+      "webImage": "cdn.frvr.com/cross/slash.jpg",
+      "webUrl": "http://slash.frvr.com/",
+      "androidImage": "cdn.frvr.com/cross/slash.jpg",
+      "androidUrl": "market://details?id=com.frvr.slash",
+      "iOSImage": "cdn.frvr.com/cross/slash.jpg",
+      "iOSUrl": "http://itunes.apple.com/app/id1202853799",
+      "facebookImage": "cdn.frvr.com/cross/slash.jpg",
+      "facebookUrl": "https://apps.facebook.com/balloonfrvr/",
+      "facebookInstantGameImage": "https://cdn.frvr.com/cross/slashicon.png",
+      "facebookInstantGameId": "194494764383189",
+      "samsungImage": "cdn.frvr.com/cross/slash.jpg",
+      "samsungUrl": "samsungapps://ProductDetail/com.frvr.slash"
+    },
+    {
+      "webImage": "cdn.frvr.com/cross/unblock.jpg",
+      "webUrl": "http://unblock.frvr.com/",
+      "androidImage": "cdn.frvr.com/cross/unblock.jpg",
+      "androidUrl": "market://details?id=com.frvr.unblock",
+      "iOSImage": "cdn.frvr.com/cross/unblock.jpg",
+      "iOSUrl": "http://itunes.apple.com/app/id1220367287",
+      "facebookImage": "cdn.frvr.com/cross/unblock.jpg",
+      "facebookUrl": "https://apps.facebook.com/unblockfrvr",
+      "facebookInstantGameImage": "https://cdn.frvr.com/cross/unblockicon.png",
+      "facebookInstantGameId": "351268735352610"
+    }
+  ]
+}
