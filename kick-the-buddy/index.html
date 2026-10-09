@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><title>bitgun-io</title><base href="https://cdn.jsdelivr.net/gh/playsurd/surd-assets-4@main/bitgun-io/">
+<!doctype html><html><head><meta charset="utf-8"><title>kick-the-buddy</title><base href="https://cdn.jsdelivr.net/gh/playsurd/surd-assets-4@main/kick-the-buddy/">
 <script data-surd="1">(function () {
   var W = window;
   var unityTarget = null;
@@ -289,19 +289,58 @@ window.alert=function(){};window.confirm=function(){return false;};window.prompt
 <div id="unity-container" class="unity-desktop" style="position:absolute;inset:0"><canvas id="unity-canvas" style="width:100vw;height:100vh;display:block"></canvas><div id="loading-cover" style="display:none"></div><div id="unity-loading-bar" style="display:none"><div id="unity-logo"></div><div id="unity-progress-bar-empty"><div id="unity-progress-bar-full"></div></div></div><div id="unity-footer"><div id="unity-webgl-logo"></div><div id="unity-fullscreen-button"></div><div id="unity-build-title"></div></div></div>
 
 <script>
-    const SPLIT_MAP = {"9beab804395830ecf57a828380aefc6a.wasm": null, "3ae170f9d395b548fa307a66f21ebe76.data": null};
+      window.config = {
+        loader: "unity-2020",
+        debug: false,
+        maxRatio: 24 / 9,
+        minRatio: 9 / 24,
+
+        title: "Kick The Buddy",
+        numScreenshots: 4,
+
+        unityVersion: "6000.1.17f1",
+        unityWebglBuildUrl: "",
+
+        fileSize: 45,
+        cachedDecompressedFileSizes: {
+          "28b3d1e66bd62209d17eda502289c7a4.loader.js": 8040,
+          "57f01ad15ff5308aa4cf52709941de32.data": 37003286,
+          "ce98e22b32ee0b3ac40e99c9eeb6b1aa.framework.js": 93289,
+          "f8d0a9b6d8d08e138ce5cac7d62b5286.wasm": 8470412,
+        },
+        metadata: {
+          poki_template_version: 1,
+          background_color: "#FFFFFF",
+          background_filename: "97e023a6c108e067d148cf5c5b57128e.jpg",
+          code_filename: "f8d0a9b6d8d08e138ce5cac7d62b5286.wasm",
+          company_name: "Playgendary",
+          data_filename: "57f01ad15ff5308aa4cf52709941de32.data",
+          development_player: "false",
+          framework_filename:
+            "ce98e22b32ee0b3ac40e99c9eeb6b1aa.framework.js",
+          height: "600",
+          loader_filename: "28b3d1e66bd62209d17eda502289c7a4.loader.js",
+          product_name: "Kick The Buddy",
+          product_version: "2.11.1",
+          splash_screen_style: "Light",
+          unity_version: "6000.1.17f1",
+          use_data_caching: "true",
+          use_threads: "false",
+          use_wasm: "true",
+          use_webgl_1_0: "false",
+          use_webgl_2_0: "true",
+          width: "960",
+        },
+      };
     </script>
 <script>
-    function resizeCanvas() {
-      const canvas = document.getElementById("unity-canvas");
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      canvas.style.width = window.innerWidth + "px";
-      canvas.style.height = window.innerHeight + "px";
-    }
-    window.addEventListener("load", resizeCanvas);
-    window.addEventListener("resize", resizeCanvas);
-    </script>
-<script data-surd="1">window.SURD_GAME = {"id":"bitgun-io","engine":"unity","base":"https://cdn.jsdelivr.net/gh/playsurd/surd-assets-4@main/bitgun-io/","runtime":"https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/v53aeb7210d/","files":{"data":{"path":"Build/3ae170f9d395b548fa307a66f21ebe76.data","parts":[".sp0",".sp1",".sp2"],"bytes":52726715,"mime":"application/octet-stream"},"framework":{"path":"Build/bea9fc514d9cf8693efadf381e76c86b.framework.js","bytes":856180,"mime":"text/javascript"},"code":{"path":"Build/9beab804395830ecf57a828380aefc6a.wasm","parts":[".sp0",".sp1",".sp2",".sp3",".sp4"],"bytes":81403492,"mime":"application/wasm"}},"config":{"era":"modern","loaderJs":"Build/1fc27643c366381df0975ebeaf8361d5.loader.js","companyName":"Bit Gun.io","productName":"Bit Gun.io","productVersion":"1.0.0"},"ext":{"https://s3.spellsync.com/sdk/spellsync.js":"_ext/s3.spellsync.com/sdk/spellsync.js"}};</script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    dataLayer.push(arguments);
+  }
+  gtag("js", new Date());
+  gtag("config", "G-PXHK7Q7G3Z");
+</script>
+<script data-surd="1">window.SURD_GAME = {"id":"kick-the-buddy","engine":"unity","base":"https://cdn.jsdelivr.net/gh/playsurd/surd-assets-4@main/kick-the-buddy/","runtime":"https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/v53aeb7210d/","files":{"data":{"path":"Build/57f01ad15ff5308aa4cf52709941de32.data","parts":[".sp0",".sp1",".sp2"],"bytes":54016808,"mime":"application/octet-stream"},"framework":{"path":"Build/ce98e22b32ee0b3ac40e99c9eeb6b1aa.framework.js","bytes":525133,"mime":"text/javascript"},"code":{"path":"Build/f8d0a9b6d8d08e138ce5cac7d62b5286.wasm","parts":[".sp0",".sp1"],"bytes":35003662,"mime":"application/wasm"}},"config":{"era":"modern","loaderJs":"Build/28b3d1e66bd62209d17eda502289c7a4.loader.js","companyName":"surd","productName":"kick-the-buddy","productVersion":"1.0"}};</script>
 <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/v53aeb7210d/runtime.js"></script>
 </body></html>

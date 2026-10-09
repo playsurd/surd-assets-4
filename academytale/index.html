@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><title>bitgun-io</title><base href="https://cdn.jsdelivr.net/gh/playsurd/surd-assets-4@main/bitgun-io/">
+<!doctype html><html><head><meta charset="utf-8"><title>academytale</title><base href="https://cdn.jsdelivr.net/gh/playsurd/surd-assets-4@main/academytale/">
 <script data-surd="1">(function () {
   var W = window;
   var unityTarget = null;
@@ -286,22 +286,121 @@ window.alert=function(){};window.confirm=function(){return false;};window.prompt
       });
     } catch(e){}
   })();</script></head><body>
-<div id="unity-container" class="unity-desktop" style="position:absolute;inset:0"><canvas id="unity-canvas" style="width:100vw;height:100vh;display:block"></canvas><div id="loading-cover" style="display:none"></div><div id="unity-loading-bar" style="display:none"><div id="unity-logo"></div><div id="unity-progress-bar-empty"><div id="unity-progress-bar-full"></div></div></div><div id="unity-footer"><div id="unity-webgl-logo"></div><div id="unity-fullscreen-button"></div><div id="unity-build-title"></div></div></div>
+
 
 <script>
-    const SPLIT_MAP = {"9beab804395830ecf57a828380aefc6a.wasm": null, "3ae170f9d395b548fa307a66f21ebe76.data": null};
-    </script>
-<script>
-    function resizeCanvas() {
-      const canvas = document.getElementById("unity-canvas");
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      canvas.style.width = window.innerWidth + "px";
-      canvas.style.height = window.innerHeight + "px";
-    }
-    window.addEventListener("load", resizeCanvas);
-    window.addEventListener("resize", resizeCanvas);
-    </script>
-<script data-surd="1">window.SURD_GAME = {"id":"bitgun-io","engine":"unity","base":"https://cdn.jsdelivr.net/gh/playsurd/surd-assets-4@main/bitgun-io/","runtime":"https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/v53aeb7210d/","files":{"data":{"path":"Build/3ae170f9d395b548fa307a66f21ebe76.data","parts":[".sp0",".sp1",".sp2"],"bytes":52726715,"mime":"application/octet-stream"},"framework":{"path":"Build/bea9fc514d9cf8693efadf381e76c86b.framework.js","bytes":856180,"mime":"text/javascript"},"code":{"path":"Build/9beab804395830ecf57a828380aefc6a.wasm","parts":[".sp0",".sp1",".sp2",".sp3",".sp4"],"bytes":81403492,"mime":"application/wasm"}},"config":{"era":"modern","loaderJs":"Build/1fc27643c366381df0975ebeaf8361d5.loader.js","companyName":"Bit Gun.io","productName":"Bit Gun.io","productVersion":"1.0.0"},"ext":{"https://s3.spellsync.com/sdk/spellsync.js":"_ext/s3.spellsync.com/sdk/spellsync.js"}};</script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    dataLayer.push(arguments);
+  }
+  gtag("js", new Date());
+  gtag("config", "G-PXHK7Q7G3Z");
+</script>
+<script>window.__surdBoot={cui:window.createUnityInstance,ul:window.UnityLoader,en:window.Engine,rp:window.RufflePlayer};window.createUnityInstance=function(){return new Promise(function(){})};window.UnityLoader={instantiate:function(){}};window.Engine=function(){};window.Engine.getMissingFeatures=function(){return[]};window.Engine.isWebGLAvailable=function(){return true};window.Engine.load=function(){return Promise.resolve()};window.RufflePlayer={newest:function(){return{createPlayer:function(){var d=document.createElement("div");d.load=function(){};return d;}};}};window.godotRunStart=function(){};window.main=function(){};</script><script>
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":46278464,"index.wasm":52126319},"focusCanvas":true,"gdextensionLibs":[],"serviceWorker":"index.service.worker.js"};
+const GODOT_THREADS_ENABLED = false;
+const engine = new Engine(GODOT_CONFIG);
+
+(function () {
+	const statusOverlay = document.getElementById('status');
+	const statusProgress = document.getElementById('status-progress');
+	const statusNotice = document.getElementById('status-notice');
+
+	let initializing = true;
+	let statusMode = '';
+
+	function setStatusMode(mode) {
+		if (statusMode === mode || !initializing) {
+			return;
+		}
+		if (mode === 'hidden') {
+			statusOverlay.remove();
+			initializing = false;
+			return;
+		}
+		statusOverlay.style.visibility = 'visible';
+		statusProgress.style.display = mode === 'progress' ? 'block' : 'none';
+		statusNotice.style.display = mode === 'notice' ? 'block' : 'none';
+		statusMode = mode;
+	}
+
+	function setStatusNotice(text) {
+		while (statusNotice.lastChild) {
+			statusNotice.removeChild(statusNotice.lastChild);
+		}
+		const lines = text.split('\n');
+		lines.forEach((line) => {
+			statusNotice.appendChild(document.createTextNode(line));
+			statusNotice.appendChild(document.createElement('br'));
+		});
+	}
+
+	function displayFailureNotice(err) {
+		console.error(err);
+		if (err instanceof Error) {
+			setStatusNotice(err.message);
+		} else if (typeof err === 'string') {
+			setStatusNotice(err);
+		} else {
+			setStatusNotice('An unknown error occurred.');
+		}
+		setStatusMode('notice');
+		initializing = false;
+	}
+
+	const missing = Engine.getMissingFeatures({
+		threads: GODOT_THREADS_ENABLED,
+	});
+
+	if (missing.length !== 0) {
+		if (GODOT_CONFIG['serviceWorker'] && GODOT_CONFIG['ensureCrossOriginIsolationHeaders'] && 'serviceWorker' in navigator) {
+			let serviceWorkerRegistrationPromise;
+			try {
+				serviceWorkerRegistrationPromise = navigator.serviceWorker.getRegistration();
+			} catch (err) {
+				serviceWorkerRegistrationPromise = Promise.reject(new Error('Service worker registration failed.'));
+			}
+			// There's a chance that installing the service worker would fix the issue
+			Promise.race([
+				serviceWorkerRegistrationPromise.then((registration) => {
+					if (registration != null) {
+						return Promise.reject(new Error('Service worker already exists.'));
+					}
+					return registration;
+				}).then(() => engine.installServiceWorker()),
+				// For some reason, `getRegistration()` can stall
+				new Promise((resolve) => {
+					setTimeout(() => resolve(), 2000);
+				}),
+			]).then(() => {
+				// Reload if there was no error.
+				window.location.reload();
+			}).catch((err) => {
+				console.error('Error while registering service worker:', err);
+			});
+		} else {
+			// Display the message as usual
+			const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
+			displayFailureNotice(missingMsg + missing.join('\n'));
+		}
+	} else {
+		setStatusMode('progress');
+		engine.startGame({
+			'onProgress': function (current, total) {
+				if (current > 0 && total > 0) {
+					statusProgress.value = current;
+					statusProgress.max = total;
+				} else {
+					statusProgress.removeAttribute('value');
+					statusProgress.removeAttribute('max');
+				}
+			},
+		}).then(() => {
+			setStatusMode('hidden');
+		}, displayFailureNotice);
+	}
+}());
+		</script><script>window.createUnityInstance=window.__surdBoot.cui;window.UnityLoader=window.__surdBoot.ul;window.Engine=window.__surdBoot.en;window.RufflePlayer=window.__surdBoot.rp;delete window.godotRunStart;</script>
+<script data-surd="1">window.SURD_GAME = {"id":"academytale","engine":"godot","base":"https://cdn.jsdelivr.net/gh/playsurd/surd-assets-4@main/academytale/","runtime":"https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/v53aeb7210d/","files":{"pck":{"path":"index.pck","parts":[".sp0",".sp1",".sp2"],"bytes":46278464,"mime":"application/octet-stream"},"wasm":{"path":"index.wasm","parts":[".sp0",".sp1",".sp2"],"bytes":52126319,"mime":"application/wasm"}},"config":{"indexJs":"index.js","godotConfig":{"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":46278464,"index.wasm":52126319},"focusCanvas":true,"gdextensionLibs":[],"serviceWorker":"index.service.worker.js"}}};</script>
 <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/v53aeb7210d/runtime.js"></script>
 </body></html>

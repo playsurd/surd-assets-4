@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset="utf-8"><title>bitgun-io</title><base href="https://cdn.jsdelivr.net/gh/playsurd/surd-assets-4@main/bitgun-io/">
+<!doctype html><html><head><meta charset="utf-8"><title>shrimp-io</title><base href="https://cdn.jsdelivr.net/gh/playsurd/surd-assets-4@main/shrimp-io/">
 <script data-surd="1">(function () {
   var W = window;
   var unityTarget = null;
@@ -289,19 +289,73 @@ window.alert=function(){};window.confirm=function(){return false;};window.prompt
 <div id="unity-container" class="unity-desktop" style="position:absolute;inset:0"><canvas id="unity-canvas" style="width:100vw;height:100vh;display:block"></canvas><div id="loading-cover" style="display:none"></div><div id="unity-loading-bar" style="display:none"><div id="unity-logo"></div><div id="unity-progress-bar-empty"><div id="unity-progress-bar-full"></div></div></div><div id="unity-footer"><div id="unity-webgl-logo"></div><div id="unity-fullscreen-button"></div><div id="unity-build-title"></div></div></div>
 
 <script>
-    const SPLIT_MAP = {"9beab804395830ecf57a828380aefc6a.wasm": null, "3ae170f9d395b548fa307a66f21ebe76.data": null};
-    </script>
-<script>
-    function resizeCanvas() {
-      const canvas = document.getElementById("unity-canvas");
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      canvas.style.width = window.innerWidth + "px";
-      canvas.style.height = window.innerHeight + "px";
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag("js", new Date());
+gtag("config", "G-PXHK7Q7G3Z");
+</script>
+<script>window.__surdBoot={cui:window.createUnityInstance,ul:window.UnityLoader,en:window.Engine,rp:window.RufflePlayer};window.createUnityInstance=function(){return new Promise(function(){})};window.UnityLoader={instantiate:function(){}};window.Engine=function(){};window.Engine.getMissingFeatures=function(){return[]};window.Engine.isWebGLAvailable=function(){return true};window.Engine.load=function(){return Promise.resolve()};window.RufflePlayer={newest:function(){return{createPlayer:function(){var d=document.createElement("div");d.load=function(){};return d;}};}};window.godotRunStart=function(){};window.main=function(){};</script><script>
+var container = document.querySelector("#unity-container");
+var canvas = document.querySelector("#unity-canvas");
+var loadingBar = document.querySelector("#unity-loading-bar");
+var loadingText = document.querySelector("#loading-text");
+var fullscreenButton = document.querySelector("#unity-fullscreen-button");
+var warningBanner = document.querySelector("#unity-warning");
+function unityShowBanner(msg, type) {
+    function updateBannerVisibility() {
+      warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
     }
-    window.addEventListener("load", resizeCanvas);
-    window.addEventListener("resize", resizeCanvas);
-    </script>
-<script data-surd="1">window.SURD_GAME = {"id":"bitgun-io","engine":"unity","base":"https://cdn.jsdelivr.net/gh/playsurd/surd-assets-4@main/bitgun-io/","runtime":"https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/v53aeb7210d/","files":{"data":{"path":"Build/3ae170f9d395b548fa307a66f21ebe76.data","parts":[".sp0",".sp1",".sp2"],"bytes":52726715,"mime":"application/octet-stream"},"framework":{"path":"Build/bea9fc514d9cf8693efadf381e76c86b.framework.js","bytes":856180,"mime":"text/javascript"},"code":{"path":"Build/9beab804395830ecf57a828380aefc6a.wasm","parts":[".sp0",".sp1",".sp2",".sp3",".sp4"],"bytes":81403492,"mime":"application/wasm"}},"config":{"era":"modern","loaderJs":"Build/1fc27643c366381df0975ebeaf8361d5.loader.js","companyName":"Bit Gun.io","productName":"Bit Gun.io","productVersion":"1.0.0"},"ext":{"https://s3.spellsync.com/sdk/spellsync.js":"_ext/s3.spellsync.com/sdk/spellsync.js"}};</script>
+    var div = document.createElement('div');
+    div.innerHTML = msg;
+    warningBanner.appendChild(div);
+    if (type == 'error') div.style = 'background: red; padding: 10px; color: white;';
+    else {
+      if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+      setTimeout(function() {
+        warningBanner.removeChild(div);
+        updateBannerVisibility();
+      }, 5000);
+    }
+    updateBannerVisibility();
+  }
+
+  var buildUrl = "Build";
+  var loaderUrl = buildUrl + "/shrimpiobog.loader.js";
+  var config = {
+    dataUrl: buildUrl + "/shrimpiobog.data",
+    frameworkUrl: buildUrl + "/shrimpiobog.framework.js",
+    codeUrl: buildUrl + "/shrimpiobog.wasm",
+    streamingAssetsUrl: "StreamingAssets",
+    companyName: "VuVuu",
+    productName: "Shrimp.io",
+    productVersion: "0.19.75",
+    showBanner: unityShowBanner,
+    webglContextAttributes: { alpha: true, preserveDrawingBuffer: true }
+  };
+
+  if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+    var meta = document.createElement('meta');
+    meta.name = 'viewport';
+    meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+    document.getElementsByTagName('head')[0].appendChild(meta);
+  }
+
+  var script = document.createElement("script");
+  script.src = loaderUrl;
+  script.onload = () => {
+    createUnityInstance(canvas, config, (progress) => {
+      loadingText.innerHTML = "LOADING... " + Math.round(100 * progress) + "%";
+    }).then((unityInstance) => {
+      loadingBar.style.display = "none";
+      fullscreenButton.onclick = () => {
+        unityInstance.SetFullscreen(1);
+      };
+    }).catch((message) => {
+      console.error(message);
+    });
+  };
+  document.body.appendChild(script);
+</script><script>window.createUnityInstance=window.__surdBoot.cui;window.UnityLoader=window.__surdBoot.ul;window.Engine=window.__surdBoot.en;window.RufflePlayer=window.__surdBoot.rp;delete window.godotRunStart;</script>
+<script data-surd="1">window.SURD_GAME = {"id":"shrimp-io","engine":"unity","base":"https://cdn.jsdelivr.net/gh/playsurd/surd-assets-4@main/shrimp-io/","runtime":"https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/v53aeb7210d/","files":{"data":{"path":"Build/shrimpiobog.data","parts":[".sp0",".sp1"],"bytes":20766840,"mime":"application/octet-stream"},"framework":{"path":"Build/shrimpiobog.framework.js","bytes":450987,"mime":"text/javascript"},"code":{"path":"Build/shrimpiobog.wasm","parts":[".sp0",".sp1",".sp2"],"bytes":39035923,"mime":"application/wasm"}},"config":{"era":"modern","loaderJs":"Build/shrimpiobog.loader.js","companyName":"VuVuu","productName":"Shrimp.io","productVersion":"0.19.75"}};</script>
 <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/gh/playsurd/surd-runtime@main/v53aeb7210d/runtime.js"></script>
 </body></html>
